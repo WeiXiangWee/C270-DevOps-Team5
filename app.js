@@ -19,6 +19,11 @@ app.get("/bookings/add", (req, res) => {
     res.render("addBooking");
 });
 
+// Feature 2 form to add a new facility
+app.get("/facilities/add", (req, res) => {
+    res.render("addFacility");
+});
+
 // Serves Feature 4 UI view dashboard module
 app.get("/availability", (req, res) => {
     res.render("search");
