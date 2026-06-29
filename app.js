@@ -8,7 +8,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 
 // Static files
-app.use('/images', express.static('images'));
+app.use(express.static('public'));
 
 // Set EJS as the view engine
 app.set("view engine", "ejs");
