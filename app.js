@@ -1,4 +1,3 @@
-
 // Imports express.js 
 const express = require("express");
 // Creates an Express application
@@ -8,7 +7,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 
 // Static files
-app.use('/images', express.static('images'));
+app.use(express.static('public'));
 
 // Set EJS as the view engine
 app.set("view engine", "ejs");
@@ -17,3 +16,9 @@ app.set("view engine", "ejs");
 app.get("/", (req, res) => {
     res.render("index");
 });
+
+
+
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
