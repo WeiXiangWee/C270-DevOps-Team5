@@ -18,7 +18,10 @@ app.get("/", (req, res) => {
 });
 
 
-
+// Serves Feature 4 UI view dashboard module
+app.get("/availability", (req, res) => {
+    res.render("search");
+});
 
 
 
