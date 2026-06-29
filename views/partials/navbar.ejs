@@ -1,22 +1,32 @@
 
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-  <div class="container-fluid">
+    <div class="container-fluid">
 
-    <a class="navbar-brand" href="/">RP Facility Booking</a>
+        <a class="navbar-brand" href="/">RP Facility Booking</a>
 
-    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-      <!-- navbar links -->
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="/">Home</a>
-        </li>
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
 
-        <li class="nav-item">
-          <a class="nav-link" href="/bookings">All Bookings</a>
-        </li>
-        
-        <li class="nav-item">
-          <a class="nav-link" href="/bookings/add">Add Booking</a>
-        </li>
-      </ul>
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/bookings">My Bookings</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/bookings/add">Add Booking</a>
+                </li>
+            </ul>
+
+        </div> <!-- collapse -->
+
+    </div> <!-- container-fluid -->
+</nav>
