@@ -17,10 +17,15 @@ app.get("/", (req, res) => {
     res.render("index");
 });
 
+// Defines a route to render the my bookings page
+// app.get("/bookings", (req, res) => {
+//     res.render("bookings");
+// });
 
-
-
-
+// Defines a route to render the add booking page
+app.get("/bookings/add", (req, res) => {
+    res.render("addBooking");
+});
 
 // Start the server
 const PORT = process.env.PORT || 3000;
