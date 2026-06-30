@@ -9,11 +9,15 @@ app.get("/", (req, res) => {
     res.render("index");
 });
 
+<<<<<<< HEAD
  // HEAD
+=======
+>>>>>>> 5dab2beb99958916ef0ddc984eaf088c434088ed
 app.get("/about", (req, res) => {
     res.render("about");
 });
 
+<<<<<<< HEAD
 
 // Defines a route to render the my bookings page
 // app.get("/bookings", (req, res) => {
@@ -33,11 +37,18 @@ app.get("/facilities/add", (req, res) => {
 // Serves Feature 4 UI view dashboard module
 app.get("/availability", (req, res) => {
     res.render("search");
+=======
+app.get("/facilities", (req, res) => {
+    res.render("facilityDetails");
+>>>>>>> 5dab2beb99958916ef0ddc984eaf088c434088ed
 });
 
 
 
+<<<<<<< HEAD
 // Start the server
+=======
+>>>>>>> 5dab2beb99958916ef0ddc984eaf088c434088ed
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port http://localhost:${PORT}`);
