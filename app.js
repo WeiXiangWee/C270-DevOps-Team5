@@ -9,9 +9,37 @@ app.get("/", (req, res) => {
     res.render("index");
 });
 
+<<<<<<< HEAD
 app.get("/about", (req, res) => {
     res.render("about");
 });
 
+=======
+// Defines a route to render the my bookings page
+// app.get("/bookings", (req, res) => {
+//     res.render("bookings");
+// });
+
+// Defines a route to render the add booking page
+app.get("/bookings/add", (req, res) => {
+    res.render("addBooking");
+});
+
+// Feature 2 form to add a new facility
+app.get("/facilities/add", (req, res) => {
+    res.render("addFacility");
+});
+
+// Serves Feature 4 UI view dashboard module
+app.get("/availability", (req, res) => {
+    res.render("search");
+});
+
+
+
+// Start the server
+>>>>>>> 138c33e82519d6bcfdaded24800ba44061cdbc53
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`Server is running on port http://localhost:${PORT}`);
+});
