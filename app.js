@@ -20,6 +20,12 @@ app.use((req, res, next) => {
 const authRoutes = require('./routes/auth');
 app.use('/', authRoutes);
 
+const facilitiesRoutes = require('./routes/facilities');
+app.use('/', facilitiesRoutes);
+
+const bookingsRoutes = require('./routes/bookings');
+app.use('/', bookingsRoutes);
+
 app.get("/", (req, res) => {
     res.render("index");
 });
@@ -35,12 +41,11 @@ app.get("/dashboard", (req, res) => {
     res.render("dashboard");
 });
 
-// Temporary route for testing - Member 2 will add proper logic later
-app.get("/facilities/add", (req, res) => {
-    if (!req.session.user || req.session.user.role !== 'admin') {
-        return res.redirect('/dashboard');
+app.get("/search", (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/login');
     }
-    res.render("addFacility");
+    res.render("search");
 });
 
 const PORT = process.env.PORT || 3000;
