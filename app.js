@@ -9,12 +9,12 @@ app.get("/", (req, res) => {
     res.render("index");
 });
 
-<<<<<<< HEAD
+ // HEAD
 app.get("/about", (req, res) => {
     res.render("about");
 });
 
-=======
+
 // Defines a route to render the my bookings page
 // app.get("/bookings", (req, res) => {
 //     res.render("bookings");
@@ -38,7 +38,6 @@ app.get("/availability", (req, res) => {
 
 
 // Start the server
->>>>>>> 138c33e82519d6bcfdaded24800ba44061cdbc53
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port http://localhost:${PORT}`);
