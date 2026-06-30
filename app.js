@@ -12,7 +12,6 @@ app.use(session({
     saveUninitialized: false
 }));
 
-// Make session available in all EJS views
 app.use((req, res, next) => {
     res.locals.session = req.session;
     next();
@@ -27,6 +26,21 @@ app.get("/", (req, res) => {
 
 app.get("/about", (req, res) => {
     res.render("about");
+});
+
+app.get("/dashboard", (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+    res.render("dashboard");
+});
+
+// Temporary route for testing - Member 2 will add proper logic later
+app.get("/facilities/add", (req, res) => {
+    if (!req.session.user || req.session.user.role !== 'admin') {
+        return res.redirect('/dashboard');
+    }
+    res.render("addFacility");
 });
 
 const PORT = process.env.PORT || 3000;

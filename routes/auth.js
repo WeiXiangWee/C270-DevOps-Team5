@@ -4,10 +4,12 @@ const bcrypt = require('bcryptjs');
 
 const users = [];
 
+// GET Register page
 router.get('/register', (req, res) => {
     res.render('register', { message: null });
 });
 
+// POST Register
 router.post('/register', async (req, res) => {
     const { name, email, phone, password, confirmPassword } = req.body;
 
@@ -27,7 +29,8 @@ router.post('/register', async (req, res) => {
         name,
         email,
         phone,
-        password: hashedPassword
+        password: hashedPassword,
+        role: 'user'
     });
 
     console.log('Registered users:', users);
@@ -35,10 +38,12 @@ router.post('/register', async (req, res) => {
     res.redirect('/login');
 });
 
+// GET Login page
 router.get('/login', (req, res) => {
     res.render('login', { message: null });
 });
 
+// POST Login
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -58,16 +63,29 @@ router.post('/login', async (req, res) => {
         id: user.id,
         name: user.name,
         email: user.email,
-        phone: user.phone
+        phone: user.phone,
+        role: user.role
     };
 
-    res.redirect('/');
+    res.redirect('/dashboard');
 });
 
+// GET Logout
 router.get('/logout', (req, res) => {
     req.session.destroy(() => {
         res.redirect('/');
     });
+});
+
+// TEMPORARY - for testing admin view (remove before final submission)
+router.get('/make-admin/:email', (req, res) => {
+    const user = users.find(u => u.email === req.params.email);
+    if (user) {
+        user.role = 'admin';
+        res.send('User is now admin! Logout and login again to see changes.');
+    } else {
+        res.send('User not found');
+    }
 });
 
 module.exports = router;
