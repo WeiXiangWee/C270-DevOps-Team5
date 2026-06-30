@@ -21,6 +21,12 @@ app.use((req, res, next) => {
 const authRoutes = require('./routes/auth');
 app.use('/', authRoutes);
 
+const facilitiesRoutes = require('./routes/facilities');
+app.use('/', facilitiesRoutes);
+
+const bookingsRoutes = require('./routes/bookings');
+app.use('/', bookingsRoutes);
+
 app.get("/", (req, res) => {
     res.render("index");
 });
@@ -36,17 +42,11 @@ app.get("/dashboard", (req, res) => {
     res.render("dashboard");
 });
 
-// Defines a route to render the add booking page
-app.get("/bookings/add", (req, res) => {
-    res.render("addBooking");
-});
-
-// Feature 2 form to add a new facility
-app.get("/facilities/add", (req, res) => {
-    if (!req.session.user || req.session.user.role !== 'admin') {
-        return res.redirect('/dashboard');
+app.get("/search", (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/login');
     }
-    res.render("addFacility");
+    res.render("search");
 });
 
 // Serves Feature 4 UI view dashboard module

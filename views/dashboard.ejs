@@ -14,6 +14,13 @@
             color: white;
             text-align: center;
         }
+        .admin-banner {
+            background-color: #1a4d2e;
+            border-radius: 20px;
+            padding: 50px;
+            color: white;
+            text-align: center;
+        }
         .quick-link-card {
             border: none;
             border-radius: 16px;
@@ -42,22 +49,56 @@
 </head>
 <body class="bg-light">
 
-    <%- include('partials/navbar') %>
+    <%- include('partials/navbarDashboard') %>
 
     <div class="container py-5">
 
-        <!-- Book a Court Session Banner -->
+        <% if (session.user.role === 'admin') { %>
+
+        <!-- ADMIN VIEW -->
+        <div class="admin-banner mb-5">
+            <i class="bi bi-shield-check fs-1 mb-2"></i>
+            <h2 class="fw-bold mb-3">Admin Control Panel</h2>
+            <p class="mb-0">Manage RP Sports facilities and bookings</p>
+        </div>
+
+        <h4 class="fw-bold mb-4">Admin Actions</h4>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <a href="/facilities" class="quick-link-card card p-4">
+                    <div class="icon-circle">
+                        <i class="bi bi-building fs-3" style="color:#2d7a2d;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Manage Facilities</h5>
+                    <p class="text-muted small mb-0">Add, edit or remove existing facilities</p>
+                </a>
+            </div>
+
+            <div class="col-md-6">
+                <a href="/bookings" class="quick-link-card card p-4">
+                    <div class="icon-circle">
+                        <i class="bi bi-calendar-check fs-3" style="color:#2d7a2d;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">All Bookings</h5>
+                    <p class="text-muted small mb-0">View and manage all reservations</p>
+                </a>
+            </div>
+        </div>
+
+        <% } else { %>
+
+        <!-- REGULAR USER VIEW -->
         <div class="booking-banner mb-5">
             <h2 class="fw-bold mb-3">Book a Court Session</h2>
             <p class="mb-4">Reserve your favourite sports facility in just a few clicks</p>
-            <a href="/bookings/add" class="btn btn-light fw-bold px-4 py-2">
+            <a href="/search" class="btn btn-light fw-bold px-4 py-2">
                 <i class="bi bi-plus-circle me-2"></i>Make a Booking
             </a>
         </div>
 
         <h4 class="fw-bold mb-4">Quick Actions</h4>
         <div class="row g-4">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <a href="/facilities" class="quick-link-card card p-4">
                     <div class="icon-circle">
                         <i class="bi bi-building fs-3" style="color:#2d7a2d;"></i>
@@ -67,38 +108,19 @@
                 </a>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <a href="/bookings" class="quick-link-card card p-4">
                     <div class="icon-circle">
                         <i class="bi bi-calendar-check fs-3" style="color:#2d7a2d;"></i>
                     </div>
                     <h5 class="fw-bold mb-2">My Bookings</h5>
-                    <p class="text-muted small mb-0">View, edit or cancel your upcoming reservations</p>
+                    <p class="text-muted small mb-0">View your upcoming reservations</p>
                 </a>
             </div>
-
-            <div class="col-md-4">
-                <a href="/search" class="quick-link-card card p-4">
-                    <div class="icon-circle">
-                        <i class="bi bi-calendar-week fs-3" style="color:#2d7a2d;"></i>
-                    </div>
-                    <h5 class="fw-bold mb-2">Check Availability</h5>
-                    <p class="text-muted small mb-0">Search and filter facilities by date, time and sport type</p>
-                </a>
-            </div>
-
-            <% if (session.user.role === 'admin') { %>
-            <div class="col-md-4">
-                <a href="/facilities/add" class="quick-link-card card p-4">
-                    <div class="icon-circle">
-                        <i class="bi bi-building-add fs-3" style="color:#2d7a2d;"></i>
-                    </div>
-                    <h5 class="fw-bold mb-2">Manage Facilities</h5>
-                    <p class="text-muted small mb-0">Add, edit or remove RP sports facilities</p>
-                </a>
-            </div>
-            <% } %>
         </div>
+
+        <% } %>
+
     </div>
 
     <footer class="py-4 text-white text-center mt-5" style="background-color:#2d7a2d;">

@@ -43,6 +43,17 @@
       border: 0.5px solid rgba(255,255,255,0.3);
       display: flex; align-items: center; gap: 5px;
     }
+    .back-link {
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-right: 16px;
+    }
+    .back-link:hover { color: #fff; }
 
     /* ── Layout ── */
     .page-content {
@@ -221,9 +232,14 @@
         <div class="topbar-sub">Facility Availability &amp; Booking</div>
       </div>
     </div>
-    <div class="topbar-badge">
-      <i class="bi bi-circle-fill" style="font-size:8px; color:#4ade80;"></i>
-      Live availability
+    <div style="display:flex; align-items:center;">
+      <a href="/dashboard" class="back-link">
+        <i class="bi bi-arrow-left"></i> Dashboard
+      </a>
+      <div class="topbar-badge">
+        <i class="bi bi-circle-fill" style="font-size:8px; color:#4ade80;"></i>
+        Live availability
+      </div>
     </div>
   </nav>
 
@@ -238,7 +254,6 @@
       </div>
       <div class="filter-body">
 
-        <!-- Demo Mock Success Banner Layout -->
         <div class="flash-success">
           <i class="bi bi-check-circle-fill"></i> System layout active. Select search parameters.
         </div>
@@ -306,7 +321,7 @@
       </div>
 
       <div class="slot-list">
-        
+
         <!-- Mock Row 1: Available -->
         <div class="slot-row">
           <div>
@@ -346,7 +361,7 @@
       </div>
     </div>
 
-  </div><!-- /.page-content -->
+  </div>
 
 </body>
 </html>
