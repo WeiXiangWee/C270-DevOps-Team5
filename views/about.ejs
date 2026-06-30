@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - RP Sports Booking</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .hero-about {
+            background-color: #2d7a2d;
+            padding: 80px 0;
+            color: white;
+        }
+        .facility-icon {
+            width: 60px;
+            height: 60px;
+            background-color: #e8f5e8;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <%- include('partials/navbar') %>
+
+    <!-- Hero Banner -->
+    <div class="hero-about text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-3">About RP Sports Complex</h1>
+            <p class="lead mb-0">World-class facilities for everyone</p>
+        </div>
+    </div>
+
+    <!-- Our Story -->
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <h2 class="fw-bold mb-3">
+                    Our <span style="color:#2d7a2d;">Story</span>
+                </h2>
+                <p class="text-muted fs-5">
+                    Republic Polytechnic's Sports Complex was built to provide 
+                    students, staff, and the community with access to world-class 
+                    sports facilities. Our complex meets top international standards 
+                    from organisations like FIBA and FIFA, making it one of the most 
+                    comprehensive sports facilities among Singapore's polytechnics.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Our Mission -->
+    <div class="py-5" style="background-color:#f0f7f0;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+                        <i class="bi bi-bullseye fs-1 mb-3" style="color:#2d7a2d;"></i>
+                        <h3 class="fw-bold mb-3">Our Mission</h3>
+                        <p class="text-muted fs-5 mb-0">
+                            To promote an active and healthy lifestyle by providing 
+                            accessible, convenient, and affordable sports facilities 
+                            for the RP community and beyond.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Our Facilities -->
+    <div class="container py-5">
+        <h2 class="fw-bold text-center mb-5">
+            Our <span style="color:#2d7a2d;">Facilities</span>
+        </h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="facility-icon">
+                            <i class="bi bi-grid-3x3" style="color:#2d7a2d;"></i>
+                        </div>
+                        <h5 class="fw-bold mb-0">Badminton Courts</h5>
+                    </div>
+                    <p class="text-muted mb-0">
+                        6 courts available in the multi-use hall, 
+                        together with 6 table tennis tables.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="facility-icon">
+                            <i class="bi bi-water" style="color:#2d7a2d;"></i>
+                        </div>
+                        <h5 class="fw-bold mb-0">Swimming Pool</h5>
+                    </div>
+                    <p class="text-muted mb-0">
+                        Olympic-size pool with warm up pool and 
+                        baby wading pool. 300-pax viewing gallery available.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="facility-icon">
+                            <i class="bi bi-dribbble" style="color:#2d7a2d;"></i>
+                        </div>
+                        <h5 class="fw-bold mb-0">Competition Hall</h5>
+                    </div>
+                    <p class="text-muted mb-0">
+                        Fully air-conditioned hall for basketball, 
+                        volleyball and netball with gallery stand.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="facility-icon">
+                            <i class="bi bi-circle" style="color:#2d7a2d;"></i>
+                        </div>
+                        <h5 class="fw-bold mb-0">Football Field</h5>
+                    </div>
+                    <p class="text-muted mb-0">
+                        Full size football and rugby field with 
+                        500-pax seating gallery at the highest 
+                        point of RP campus.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="facility-icon">
+                            <i class="bi bi-person-arms-up" style="color:#2d7a2d;"></i>
+                        </div>
+                        <h5 class="fw-bold mb-0">Martial Arts Room</h5>
+                    </div>
+                    <p class="text-muted mb-0">
+                        50 persons capacity with tatami mats provided.
+                        Perfect for taekwondo, judo, aikido and more.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="facility-icon">
+                            <i class="bi bi-table" style="color:#2d7a2d;"></i>
+                        </div>
+                        <h5 class="fw-bold mb-0">Table Tennis</h5>
+                    </div>
+                    <p class="text-muted mb-0">
+                        6 table tennis tables available for 
+                        booking and casual play sessions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Who Can Book -->
+    <div class="py-5" style="background-color:#f0f7f0;">
+        <div class="container">
+            <h2 class="fw-bold text-center mb-5">
+                Who Can <span style="color:#2d7a2d;">Book</span>
+            </h2>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                        <h5 class="fw-bold mb-3">
+                            <i class="bi bi-people-fill me-2" style="color:#2d7a2d;"></i>
+                            Internal Users
+                        </h5>
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill me-2" style="color:#2d7a2d;"></i>
+                                RP Students
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill me-2" style="color:#2d7a2d;"></i>
+                                RP Staff
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill me-2" style="color:#2d7a2d;"></i>
+                                RP Alumni (Club Republic card holders)
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                        <h5 class="fw-bold mb-3">
+                            <i class="bi bi-building me-2" style="color:#2d7a2d;"></i>
+                            External Organisations
+                        </h5>
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill me-2" style="color:#2d7a2d;"></i>
+                                Government Agencies
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill me-2" style="color:#2d7a2d;"></i>
+                                National Sports Associations
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill me-2" style="color:#2d7a2d;"></i>
+                                VWOs under NCSS
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill me-2" style="color:#2d7a2d;"></i>
+                                Sports & Recreation Centres
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill me-2" style="color:#2d7a2d;"></i>
+                                Registered Kindergartens (MOE)
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill me-2" style="color:#2d7a2d;"></i>
+                                Licensed Childcare Operators (MSF)
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Rules -->
+    <div class="container py-5">
+        <h2 class="fw-bold text-center mb-5">
+            Booking <span style="color:#2d7a2d;">Rules</span>
+        </h2>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card border-0 shadow-sm rounded-4 p-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="bi bi-calendar-check fs-3" style="color:#2d7a2d;"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-0">Advance Booking</h6>
+                                    <small class="text-muted">At least 3 days in advance</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="bi bi-calendar-range fs-3" style="color:#2d7a2d;"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-0">Maximum Advance</h6>
+                                    <small class="text-muted">Up to 7 days in advance</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="bi bi-card-heading fs-3" style="color:#2d7a2d;"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-0">Alumni Verification</h6>
+                                    <small class="text-muted">Club Republic card required</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="bi bi-x-circle fs-3" style="color:#2d7a2d;"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-0">Alumni Restriction</h6>
+                                    <small class="text-muted">No multiple court bookings</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-4 text-white text-center" style="background-color:#2d7a2d;">
+        <p class="mb-0">© 2026 RP Sports Booking System | Republic Polytechnic</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
