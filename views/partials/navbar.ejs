@@ -9,25 +9,36 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-center">
+
+                <% if (locals.session && locals.session.user) { %>
+                <!-- LOGGED IN: Show profile dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" 
+                       href="#" role="button" data-bs-toggle="dropdown">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+                             style="width:36px;height:36px;background-color:#2d7a2d;">
+                            <%= session.user.name.charAt(0).toUpperCase() %>
+                        </div>
+                        <span class="fw-semibold text-dark"><%= session.user.name %></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/profile">
+                            <i class="bi bi-person me-2"></i>My Profile
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="/logout">
+                            <i class="bi bi-box-arrow-right me-2"></i>Logout
+                        </a></li>
+                    </ul>
+                </li>
+                <% } else { %>
+                <!-- NOT LOGGED IN: Show About Us, Contact Us, Login -->
                 <li class="nav-item">
                     <a class="nav-link text-dark fw-semibold" href="/about">About Us</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark fw-semibold" href="/contact">Contact Us</a>
                 </li>
-                <% if (locals.session && locals.session.user) { %>
-                <li class="nav-item">
-                    <a class="nav-link text-dark fw-semibold" href="/my-bookings">
-                        <i class="bi bi-calendar-check me-1"></i>My Bookings
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="btn ms-2 px-4 fw-semibold text-white" 
-                       style="background-color:#2d7a2d;" href="/logout">
-                        Logout
-                    </a>
-                </li>
-                <% } else { %>
                 <li class="nav-item">
                     <a class="btn ms-2 px-4 fw-semibold text-white" 
                        style="background-color:#2d7a2d;" href="/login">

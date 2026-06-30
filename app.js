@@ -25,16 +25,16 @@ app.get("/", (req, res) => {
     res.render("index");
 });
 
- // HEAD
 app.get("/about", (req, res) => {
     res.render("about");
 });
 
-
-// Defines a route to render the my bookings page
-// app.get("/bookings", (req, res) => {
-//     res.render("bookings");
-// });
+app.get("/dashboard", (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+    res.render("dashboard");
+});
 
 // Defines a route to render the add booking page
 app.get("/bookings/add", (req, res) => {
@@ -43,6 +43,9 @@ app.get("/bookings/add", (req, res) => {
 
 // Feature 2 form to add a new facility
 app.get("/facilities/add", (req, res) => {
+    if (!req.session.user || req.session.user.role !== 'admin') {
+        return res.redirect('/dashboard');
+    }
     res.render("addFacility");
 });
 
@@ -51,9 +54,6 @@ app.get("/availability", (req, res) => {
     res.render("search");
 });
 
-
-
-// Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port http://localhost:${PORT}`);
