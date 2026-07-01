@@ -2,7 +2,25 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 
-const users = [];
+// Pre-seeded test accounts
+const users = [
+    {
+        id: 1,
+        name: 'Test Admin',
+        email: 'testAdmin@test.com',
+        phone: '91234567',
+        password: bcrypt.hashSync('testAdmin', 10),
+        role: 'admin'
+    },
+    {
+        id: 2,
+        name: 'Test User',
+        email: 'testUser@test.com',
+        phone: '98765432',
+        password: bcrypt.hashSync('testUser', 10),
+        role: 'user'
+    }
+];
 
 // GET Register page
 router.get('/register', (req, res) => {
