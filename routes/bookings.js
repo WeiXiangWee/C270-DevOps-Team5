@@ -2,17 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const bookings = [
-    {
-        id: 1,
-        userId: 2,
-        userName: 'Test User',
-        name: 'Badminton Hall (6 Courts)',
-        date: '2026-07-02',
-        duration: '19:00 – 21:00',
-        remarks: '',
-        status: 'cancelled',
-        remarks_status: 'pending'
-    }
+    
 ];
 
 // GET - View all bookings
