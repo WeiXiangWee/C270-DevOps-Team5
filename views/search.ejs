@@ -280,7 +280,7 @@
 
           <hr class="divider">
 
-          <button type="submit" class="btn-search">
+          <button type="submit" class="btn-search" onclick="return validateDate()">
             <i class="bi bi-search"></i> Search slots
           </button>
         </form>
@@ -347,6 +347,68 @@
     </div>
 
   </div>
+
+  <script>
+    function validateDate() {
+        const dateInput = document.querySelector('input[name="date"]');
+        const selectedDate = new Date(dateInput.value);
+        const today = new Date();
+
+        today.setHours(0, 0, 0, 0);
+        selectedDate.setHours(0, 0, 0, 0);
+
+        if (dateInput.value && selectedDate < today) {
+            alert('The selected date is in the past! Please select today or a future date and try again.');
+            return false;
+        }
+
+        return true;
+    }
+
+    function hidePastSlots() {
+        const dateInput = document.querySelector('input[name="date"]');
+        if (!dateInput.value) return;
+
+        const selectedDate = new Date(dateInput.value);
+        const today = new Date();
+
+        const isToday = selectedDate.toDateString() === today.toDateString();
+        if (!isToday) return;
+
+        const currentHour = today.getHours();
+        const currentMinutes = today.getMinutes();
+
+        const slotRows = document.querySelectorAll('.slot-row');
+
+        slotRows.forEach(row => {
+            const timeEl = row.querySelector('.slot-time');
+            if (!timeEl) return;
+
+            const timeText = timeEl.textContent.trim();
+            const match = timeText.match(/(\d+):(\d+)/);
+            if (!match) return;
+
+            const slotHour = parseInt(match[1]);
+            const slotMinute = parseInt(match[2]);
+
+            if (slotHour < currentHour ||
+               (slotHour === currentHour && slotMinute <= currentMinutes)) {
+                row.style.display = 'none';
+            } else {
+                row.style.display = '';
+            }
+        });
+
+        const allSlots = document.querySelectorAll('.slot-row').length;
+        const hiddenSlots = document.querySelectorAll('.slot-row[style="display: none;"]').length;
+        const count = allSlots - hiddenSlots;
+        document.querySelector('.results-count').textContent = count + ' slots';
+    }
+
+    window.onload = function() {
+        hidePastSlots();
+    };
+  </script>
 
 </body>
 </html>

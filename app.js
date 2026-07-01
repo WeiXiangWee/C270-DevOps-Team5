@@ -141,11 +141,6 @@ app.get("/availability", (req, res) => {
     res.redirect('/search');
 });
 
-// Serves Feature 4 UI view dashboard module
-app.get("/availability", (req, res) => {
-    res.render("search");
-});
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port http://localhost:${PORT}`);

@@ -1,7 +1,19 @@
 const express = require('express');
 const router = express.Router();
 
-const bookings = [];
+const bookings = [
+    {
+        id: 1,
+        userId: 2,
+        userName: 'Test User',
+        name: 'Badminton Hall (6 Courts)',
+        date: '2026-07-02',
+        duration: '19:00 – 21:00',
+        remarks: '',
+        status: 'cancelled',
+        remarks_status: 'pending'
+    }
+];
 
 // GET - View all bookings
 router.get('/bookings', (req, res) => {
@@ -13,10 +25,35 @@ router.get('/bookings', (req, res) => {
     if (req.session.user.role === 'admin') {
         userBookings = bookings;
     } else {
-        userBookings = bookings.filter(b => b.userId === req.session.user.id);
+        userBookings = bookings.filter(b => b.userId == req.session.user.id);
     }
 
-    res.render('bookings', { bookings: userBookings });
+    // Default values
+    let showAlert = false;
+    let newCancellations = 0;
+
+    // Only check for regular users
+    if (req.session.user.role !== 'admin') {
+        const newlyCancelled = userBookings.filter(
+            b => b.status === 'cancelled' && b.remarks_status !== 'shown'
+        );
+
+        if (newlyCancelled.length > 0) {
+            showAlert = true;
+            newCancellations = newlyCancelled.length;
+
+            // Mark all as shown
+            newlyCancelled.forEach(b => {
+                b.remarks_status = 'shown';
+            });
+        }
+    }
+
+    res.render('bookings', {
+        bookings: userBookings,
+        showAlert: showAlert,
+        newCancellations: newCancellations
+    });
 });
 
 // GET - Book directly from search page
@@ -35,12 +72,13 @@ router.get('/bookings/add', (req, res) => {
         date: date || 'Not specified',
         duration: time || 'Not specified',
         remarks: '',
-        status: 'confirmed'
+        status: 'confirmed',
+        remarks_status: 'shown'
     };
 
     bookings.push(newBooking);
 
-    // Mark this slot as booked using YYYY-MM-DD date format
+    // Mark this slot as booked
     const bookedSlots = req.app.locals.bookedSlots;
     bookedSlots.push({
         facility: name,
@@ -48,9 +86,25 @@ router.get('/bookings/add', (req, res) => {
         time: time
     });
 
-    console.log('Booked slots:', bookedSlots);
-
     res.render('bookingSuccess', { booking: newBooking });
+});
+
+// POST - Admin cancel booking with reason
+router.post('/bookings/cancel/:id', (req, res) => {
+    if (!req.session.user || req.session.user.role !== 'admin') {
+        return res.redirect('/dashboard');
+    }
+
+    const { reason } = req.body;
+    const booking = bookings.find(b => b.id == req.params.id);
+
+    if (booking) {
+        booking.status = 'cancelled';
+        booking.remarks = reason || 'Cancelled by admin';
+        booking.remarks_status = 'pending';
+    }
+
+    res.redirect('/bookings');
 });
 
 module.exports = router;
