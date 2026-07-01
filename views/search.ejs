@@ -17,7 +17,6 @@
     * { box-sizing: border-box; }
     body { background: #f4f5f4; font-family: system-ui, -apple-system, sans-serif; }
 
-    /* ── Top bar ── */
     .topbar {
       background: var(--rp-green);
       padding: 14px 24px;
@@ -55,7 +54,6 @@
     }
     .back-link:hover { color: #fff; }
 
-    /* ── Layout ── */
     .page-content {
       max-width: 1100px;
       margin: 24px auto;
@@ -66,7 +64,6 @@
       align-items: start;
     }
 
-    /* ── Filter panel ── */
     .filter-panel {
       background: #fff;
       border: 0.5px solid #dde3dd;
@@ -108,7 +105,6 @@
     .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
     .dot-avail  { background: #16a34a; }
     .dot-booked { background: #9ca3af; }
-    .dot-maint  { background: #d97706; }
 
     .btn-search {
       width: 100%; padding: 10px;
@@ -116,6 +112,7 @@
       border: none; border-radius: 8px;
       font-size: 13px; font-weight: 600;
       display: flex; align-items: center; justify-content: center; gap: 6px;
+      cursor: pointer;
     }
 
     .btn-reset {
@@ -123,9 +120,12 @@
       background: transparent; color: #6b7280;
       border: 0.5px solid #d1d5db; border-radius: 8px;
       font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+      text-align: center;
     }
 
-    /* ── Results panel ── */
     .results-panel {
       background: #fff;
       border: 0.5px solid #dde3dd;
@@ -147,7 +147,6 @@
       border: 0.5px solid #e5e7eb;
     }
 
-    /* ── Column header ── */
     .slot-head {
       display: grid;
       grid-template-columns: 2fr 1fr 1.3fr 110px 100px;
@@ -163,7 +162,6 @@
       text-transform: uppercase;
     }
 
-    /* ── Slot rows ── */
     .slot-list { display: flex; flex-direction: column; }
     .slot-row {
       display: grid;
@@ -181,7 +179,6 @@
     .slot-time { font-size: 13px; color: #111827; display: flex; align-items: center; gap: 5px; }
     .slot-time i { font-size: 13px; color: #9ca3af; }
 
-    /* Status pills */
     .pill {
       display: inline-flex; align-items: center; gap: 5px;
       padding: 4px 9px; border-radius: 20px;
@@ -190,26 +187,22 @@
     .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
     .pill-avail  { background: #dcfce7; color: #15803d; }
     .pill-booked { background: #f3f4f6; color: #6b7280; border: 0.5px solid #e5e7eb; }
-    .pill-maint  { background: #fef9c3; color: #a16207; }
 
-    /* Action buttons */
     .btn-book {
       padding: 6px 13px; font-size: 12px; font-weight: 600;
       border-radius: 8px; border: none; width: 100%;
+      display: block; text-align: center; text-decoration: none;
     }
     .btn-book-active { background: var(--rp-green); color: #fff; }
-    .btn-book-inactive { background: #f3f4f6; color: #9ca3af; }
+    .btn-book-inactive { background: #f3f4f6; color: #9ca3af; pointer-events: none; }
 
-    /* Flash messages */
-    .flash-success {
-      background: #dcfce7; color: #15803d;
-      border: 0.5px solid #86efac;
-      border-radius: 8px; padding: 10px 14px;
-      font-size: 13px; margin-bottom: 12px;
-      display: flex; align-items: center; gap: 8px;
+    .empty-state {
+      padding: 40px;
+      text-align: center;
+      color: #9ca3af;
+      font-size: 13px;
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
       .page-content { grid-template-columns: 1fr; }
       .slot-head,
@@ -221,7 +214,7 @@
 </head>
 <body>
 
-  <!-- ── Top bar ── -->
+  <!-- Top bar -->
   <nav class="topbar">
     <div class="topbar-left">
       <div class="topbar-logo">
@@ -243,7 +236,7 @@
     </div>
   </nav>
 
-  <!-- ── Page body ── -->
+  <!-- Page body -->
   <div class="page-content">
 
     <!-- Filter panel -->
@@ -254,29 +247,25 @@
       </div>
       <div class="filter-body">
 
-        <div class="flash-success">
-          <i class="bi bi-check-circle-fill"></i> System layout active. Select search parameters.
-        </div>
-
-        <form onsubmit="return false;">
+        <form method="GET" action="/search">
           <div style="margin-bottom: 14px;">
             <div class="field-label"><i class="bi bi-building"></i> Facility</div>
             <select name="facility">
               <option value="">All facilities</option>
-              <option value="Competition Hall">Competition Hall</option>
-              <option value="Badminton Hall (6 Courts)">Badminton Hall (6 Courts)</option>
-              <option value="Table Tennis Hall (6 Tables)">Table Tennis Hall (6 Tables)</option>
-              <option value="Multi-Purpose Hall">Multi-Purpose Hall</option>
-              <option value="Tennis / Basketball / Futsal Court">Tennis / Basketball / Futsal Court</option>
-              <option value="Football and Rugby Field">Football and Rugby Field</option>
-              <option value="Swimming Pool">Swimming Pool</option>
-              <option value="Martial Arts Room">Martial Arts Room</option>
+              <option value="Competition Hall" <%= selectedFacility === 'Competition Hall' ? 'selected' : '' %>>Competition Hall</option>
+              <option value="Badminton Hall (6 Courts)" <%= selectedFacility === 'Badminton Hall (6 Courts)' ? 'selected' : '' %>>Badminton Hall (6 Courts)</option>
+              <option value="Table Tennis Hall (6 Tables)" <%= selectedFacility === 'Table Tennis Hall (6 Tables)' ? 'selected' : '' %>>Table Tennis Hall (6 Tables)</option>
+              <option value="Multi-Purpose Hall" <%= selectedFacility === 'Multi-Purpose Hall' ? 'selected' : '' %>>Multi-Purpose Hall</option>
+              <option value="Tennis / Basketball / Futsal Court" <%= selectedFacility === 'Tennis / Basketball / Futsal Court' ? 'selected' : '' %>>Tennis / Basketball / Futsal Court</option>
+              <option value="Football and Rugby Field" <%= selectedFacility === 'Football and Rugby Field' ? 'selected' : '' %>>Football and Rugby Field</option>
+              <option value="Swimming Pool" <%= selectedFacility === 'Swimming Pool' ? 'selected' : '' %>>Swimming Pool</option>
+              <option value="Martial Arts Room" <%= selectedFacility === 'Martial Arts Room' ? 'selected' : '' %>>Martial Arts Room</option>
             </select>
           </div>
 
           <div style="margin-bottom: 14px;">
             <div class="field-label"><i class="bi bi-calendar3"></i> Date</div>
-            <input type="date" name="date" value="2026-07-01">
+            <input type="date" name="date" value="<%= selectedDate %>">
           </div>
 
           <hr class="divider">
@@ -286,18 +275,17 @@
             <div class="legend">
               <div class="legend-row"><div class="legend-dot dot-avail"></div> Available</div>
               <div class="legend-row"><div class="legend-dot dot-booked"></div> Booked</div>
-              <div class="legend-row"><div class="legend-dot dot-maint"></div> Under maintenance</div>
             </div>
           </div>
 
           <hr class="divider">
 
-          <button type="button" class="btn-search">
+          <button type="submit" class="btn-search">
             <i class="bi bi-search"></i> Search slots
           </button>
         </form>
 
-        <button type="button" class="btn-reset">Reset filters</button>
+        <a href="/search" class="btn-reset">Reset filters</a>
 
       </div>
     </div>
@@ -309,7 +297,7 @@
           <i class="bi bi-list-ul"></i>
           <span class="results-title">Available slots</span>
         </div>
-        <span class="results-count">3 slots</span>
+        <span class="results-count"><%= slots.length %> slots</span>
       </div>
 
       <div class="slot-head">
@@ -321,43 +309,40 @@
       </div>
 
       <div class="slot-list">
-
-        <!-- Mock Row 1: Available -->
+        <% if (slots.length === 0) { %>
+        <div class="empty-state">
+          <i class="bi bi-calendar-x" style="font-size:2rem; display:block; margin-bottom:8px;"></i>
+          No slots found for your search.
+        </div>
+        <% } else { %>
+        <% slots.forEach(slot => { %>
         <div class="slot-row">
           <div>
-            <div class="facility-name">Badminton Hall (6 Courts)</div>
-            <div class="facility-type"><i class="bi bi-geo-alt" style="font-size:10px;"></i> Indoor Hub</div>
+            <div class="facility-name"><%= slot.facility %></div>
+            <div class="facility-type">
+              <i class="bi bi-geo-alt" style="font-size:10px;"></i> <%= slot.type %>
+            </div>
           </div>
-          <div class="slot-date">1 Jul 2026</div>
-          <div class="slot-time"><i class="bi bi-clock"></i> 09:00 – 11:00</div>
-          <div><span class="pill pill-avail"><span class="pill-dot"></span>Available</span></div>
-          <div><button class="btn-book btn-book-active">Book now</button></div>
-        </div>
-
-        <!-- Mock Row 2: Booked -->
-        <div class="slot-row">
+          <div class="slot-date"><%= slot.displayDate %></div>
+          <div class="slot-time"><i class="bi bi-clock"></i> <%= slot.time %></div>
           <div>
-            <div class="facility-name">Swimming Pool</div>
-            <div class="facility-type"><i class="bi bi-geo-alt" style="font-size:10px;"></i> Outdoor Hub</div>
+            <% if (slot.status === 'available') { %>
+            <span class="pill pill-avail"><span class="pill-dot"></span>Available</span>
+            <% } else { %>
+            <span class="pill pill-booked"><span class="pill-dot"></span>Booked</span>
+            <% } %>
           </div>
-          <div class="slot-date">1 Jul 2026</div>
-          <div class="slot-time"><i class="bi bi-clock"></i> 14:00 – 16:00</div>
-          <div><span class="pill pill-booked"><span class="pill-dot"></span>Booked</span></div>
-          <div><button class="btn-book btn-book-inactive" disabled>Unavailable</button></div>
-        </div>
-
-        <!-- Mock Row 3: Maintenance -->
-        <div class="slot-row">
           <div>
-            <div class="facility-name">Martial Arts Room</div>
-            <div class="facility-type"><i class="bi bi-geo-alt" style="font-size:10px;"></i> Level 2</div>
+            <% if (slot.status === 'available') { %>
+            <a href="/bookings/add?name=<%= encodeURIComponent(slot.facility) %>&date=<%= slot.date %>&time=<%= encodeURIComponent(slot.time) %>"
+               class="btn-book btn-book-active">Book now</a>
+            <% } else { %>
+            <span class="btn-book btn-book-inactive">Unavailable</span>
+            <% } %>
           </div>
-          <div class="slot-date">2 Jul 2026</div>
-          <div class="slot-time"><i class="bi bi-clock"></i> 10:00 – 12:00</div>
-          <div><span class="pill pill-maint"><span class="pill-dot"></span>Maintenance</span></div>
-          <div><button class="btn-book btn-book-inactive" disabled>Unavailable</button></div>
         </div>
-
+        <% }) %>
+        <% } %>
       </div>
     </div>
 
