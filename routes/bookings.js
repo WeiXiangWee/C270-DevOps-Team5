@@ -19,34 +19,38 @@ router.get('/bookings', (req, res) => {
     res.render('bookings', { bookings: userBookings });
 });
 
-// GET - Show add booking form
+// GET - Book directly from search page
 router.get('/bookings/add', (req, res) => {
     if (!req.session.user) {
         return res.redirect('/login');
     }
-    res.render('addBooking');
-});
 
-// POST - Add new booking
-router.post('/bookings/add', (req, res) => {
-    if (!req.session.user) {
-        return res.redirect('/login');
-    }
+    const { name, date, time } = req.query;
 
-    const { name, date, duration, remarks } = req.body;
-
-    bookings.push({
+    const newBooking = {
         id: bookings.length + 1,
         userId: req.session.user.id,
         userName: req.session.user.name,
-        name,
-        date,
-        duration,
-        remarks,
+        name: name || 'Facility',
+        date: date || 'Not specified',
+        duration: time || 'Not specified',
+        remarks: '',
         status: 'confirmed'
+    };
+
+    bookings.push(newBooking);
+
+    // Mark this slot as booked using YYYY-MM-DD date format
+    const bookedSlots = req.app.locals.bookedSlots;
+    bookedSlots.push({
+        facility: name,
+        date: date,
+        time: time
     });
 
-    res.redirect('/bookings');
+    console.log('Booked slots:', bookedSlots);
+
+    res.render('bookingSuccess', { booking: newBooking });
 });
 
 module.exports = router;
