@@ -105,6 +105,7 @@
     .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
     .dot-avail  { background: #16a34a; }
     .dot-booked { background: #9ca3af; }
+    .dot-maint  { background: #d97706; }
 
     .btn-search {
       width: 100%; padding: 10px;
@@ -187,6 +188,7 @@
     .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
     .pill-avail  { background: #dcfce7; color: #15803d; }
     .pill-booked { background: #f3f4f6; color: #6b7280; border: 0.5px solid #e5e7eb; }
+    .pill-maint  { background: #fef9c3; color: #a16207; }
 
     .btn-book {
       padding: 6px 13px; font-size: 12px; font-weight: 600;
@@ -275,6 +277,7 @@
             <div class="legend">
               <div class="legend-row"><div class="legend-dot dot-avail"></div> Available</div>
               <div class="legend-row"><div class="legend-dot dot-booked"></div> Booked</div>
+              <div class="legend-row"><div class="legend-dot dot-maint"></div> Under Maintenance</div>
             </div>
           </div>
 
@@ -311,8 +314,14 @@
       <div class="slot-list">
         <% if (slots.length === 0) { %>
         <div class="empty-state">
-          <i class="bi bi-calendar-x" style="font-size:2rem; display:block; margin-bottom:8px;"></i>
-          No slots found for your search.
+            <% if (isClosed) { %>
+            <i class="bi bi-door-closed" style="font-size:2rem; display:block; margin-bottom:8px;"></i>
+            The sports complex is closed on this day.<br>
+            <small>We are closed on Sundays and Public Holidays.</small>
+            <% } else { %>
+            <i class="bi bi-calendar-x" style="font-size:2rem; display:block; margin-bottom:8px;"></i>
+            No slots found for your search.
+            <% } %>
         </div>
         <% } else { %>
         <% slots.forEach(slot => { %>
@@ -328,6 +337,8 @@
           <div>
             <% if (slot.status === 'available') { %>
             <span class="pill pill-avail"><span class="pill-dot"></span>Available</span>
+            <% } else if (slot.status === 'maintenance') { %>
+            <span class="pill pill-maint"><span class="pill-dot"></span>Maintenance</span>
             <% } else { %>
             <span class="pill pill-booked"><span class="pill-dot"></span>Booked</span>
             <% } %>

@@ -15,6 +15,20 @@ app.use(session({
 // Make session available in all EJS views
 app.use((req, res, next) => {
     res.locals.session = req.session;
+
+    // Check for new cancellations for logged in users
+    if (req.session.user && req.session.user.role !== 'admin') {
+        const bookingsRoute = require('./routes/bookings');
+        const allBookings = bookingsRoute.getBookings();
+        const userBookings = allBookings.filter(b => b.userId == req.session.user.id);
+        const hasNewCancellations = userBookings.some(
+            b => b.status === 'cancelled' && b.remarks_status !== 'shown'
+        );
+        res.locals.hasNewCancellations = hasNewCancellations;
+    } else {
+        res.locals.hasNewCancellations = false;
+    }
+
     next();
 });
 
@@ -38,7 +52,7 @@ const facilities = [
     { name: 'Martial Arts Room', type: 'Level 2' }
 ];
 
-const timeSlots = [
+const weekdayTimeSlots = [
     '07:00 – 09:00',
     '09:00 – 11:00',
     '11:00 – 13:00',
@@ -48,13 +62,44 @@ const timeSlots = [
     '19:00 – 21:00'
 ];
 
+const saturdayTimeSlots = [
+    '07:00 – 09:00',
+    '09:00 – 11:00',
+    '11:00 – 13:00'
+];
+
+const publicHolidays = [
+    '2026-01-01',
+    '2026-01-29',
+    '2026-01-30',
+    '2026-04-03',
+    '2026-05-01',
+    '2026-05-12',
+    '2026-06-02',
+    '2026-08-09',
+    '2026-08-10',
+    '2026-10-27',
+    '2026-12-25',
+];
+
 function getSlotsForDate(dateStr) {
-    const d = new Date(dateStr);
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const d = new Date(year, month - 1, day);
+    const dayOfWeek = d.getDay();
+
+    console.log(`Date: ${dateStr}, Day of week: ${dayOfWeek}`);
+
+    if (dayOfWeek === 0 || publicHolidays.includes(dateStr)) {
+        return [];
+    }
+
     const displayDate = d.toLocaleDateString('en-GB', {
         day: 'numeric',
         month: 'short',
         year: 'numeric'
     });
+
+    const timeSlots = dayOfWeek === 6 ? saturdayTimeSlots : weekdayTimeSlots;
 
     const slots = [];
     let id = 1;
@@ -76,7 +121,6 @@ function getSlotsForDate(dateStr) {
     return slots;
 }
 
-// Store booked slots
 const bookedSlots = [];
 app.locals.bookedSlots = bookedSlots;
 
@@ -102,26 +146,29 @@ app.get("/search", (req, res) => {
 
     const { facility, date } = req.query;
 
-    // Default to today
     const today = new Date().toISOString().split('T')[0];
     const selectedDate = date || today;
     const selectedFacility = facility || '';
 
-    // Generate slots for selected date
+    const [year, month, day] = selectedDate.split('-').map(Number);
+    const d = new Date(year, month - 1, day);
+    const isClosed = d.getDay() === 0 || publicHolidays.includes(selectedDate);
+
     let slots = getSlotsForDate(selectedDate);
 
-    // Mark booked slots as unavailable
     const bookedSlots = app.locals.bookedSlots;
     slots = slots.map(slot => {
-        const isBooked = bookedSlots.find(b =>
+        const bookedSlot = bookedSlots.find(b =>
             b.facility === slot.facility &&
             b.date === slot.date &&
             b.time === slot.time
         );
-        return isBooked ? { ...slot, status: 'booked' } : slot;
+        if (bookedSlot) {
+            return { ...slot, status: bookedSlot.maintenance ? 'maintenance' : 'booked' };
+        }
+        return slot;
     });
 
-    // Filter by facility if selected
     if (selectedFacility !== '') {
         slots = slots.filter(s => s.facility === selectedFacility);
     }
@@ -130,7 +177,8 @@ app.get("/search", (req, res) => {
         slots: slots,
         selectedFacility: selectedFacility,
         selectedDate: selectedDate,
-        searched: req.query.facility !== undefined || req.query.date !== undefined
+        searched: req.query.facility !== undefined || req.query.date !== undefined,
+        isClosed: isClosed
     });
 });
 
@@ -139,6 +187,11 @@ app.get("/availability", (req, res) => {
         return res.redirect('/login');
     }
     res.redirect('/search');
+});
+
+// Contact Us - accessible without login
+app.get("/contact", (req, res) => {
+    res.render("contact");
 });
 
 const PORT = process.env.PORT || 3000;
