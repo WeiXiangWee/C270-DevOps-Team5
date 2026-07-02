@@ -12,19 +12,20 @@ app.use(session({
     saveUninitialized: false
 }));
 
-// Make session available in all EJS views
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
     res.locals.session = req.session;
 
-    // Check for new cancellations for logged in users
     if (req.session.user && req.session.user.role !== 'admin') {
-        const bookingsRoute = require('./routes/bookings');
-        const allBookings = bookingsRoute.getBookings();
-        const userBookings = allBookings.filter(b => b.userId == req.session.user.id);
-        const hasNewCancellations = userBookings.some(
-            b => b.status === 'cancelled' && b.remarks_status !== 'shown'
-        );
-        res.locals.hasNewCancellations = hasNewCancellations;
+        try {
+            const db = require('./db');
+            const [rows] = await db.query(
+                'SELECT * FROM bookings WHERE userId = ? AND status = ? AND remarks_status = ?',
+                [req.session.user.id, 'cancelled', 'pending']
+            );
+            res.locals.hasNewCancellations = rows.length > 0;
+        } catch (err) {
+            res.locals.hasNewCancellations = false;
+        }
     } else {
         res.locals.hasNewCancellations = false;
     }
@@ -87,8 +88,6 @@ function getSlotsForDate(dateStr) {
     const d = new Date(year, month - 1, day);
     const dayOfWeek = d.getDay();
 
-    console.log(`Date: ${dateStr}, Day of week: ${dayOfWeek}`);
-
     if (dayOfWeek === 0 || publicHolidays.includes(dateStr)) {
         return [];
     }
@@ -123,6 +122,52 @@ function getSlotsForDate(dateStr) {
 
 const bookedSlots = [];
 app.locals.bookedSlots = bookedSlots;
+
+// Load existing bookings and maintenance from DB on startup
+async function loadBookedSlots() {
+    try {
+        const db = require('./db');
+
+        const [bookings] = await db.query(
+            "SELECT name, date, duration FROM bookings WHERE status = 'confirmed'"
+        );
+        bookings.forEach(b => {
+            bookedSlots.push({
+                facility: b.name,
+                date: b.date,
+                time: b.duration
+            });
+        });
+
+        const [maintenanceList] = await db.query('SELECT * FROM maintenance');
+        const timeSlots = [
+            '07:00 – 09:00', '09:00 – 11:00', '11:00 – 13:00',
+            '13:00 – 15:00', '15:00 – 17:00', '17:00 – 19:00', '19:00 – 21:00'
+        ];
+
+        maintenanceList.forEach(m => {
+            let currentDate = new Date(m.startDate);
+            const endDateObj = new Date(m.endDate);
+
+            while (currentDate <= endDateObj) {
+                const dateStr = currentDate.toISOString().split('T')[0];
+                timeSlots.forEach(time => {
+                    bookedSlots.push({
+                        facility: m.facility,
+                        date: dateStr,
+                        time: time,
+                        maintenance: true
+                    });
+                });
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+        });
+
+        console.log(`✅ Loaded ${bookings.length} bookings and ${maintenanceList.length} maintenance records`);
+    } catch (err) {
+        console.error('Error loading slots:', err.message);
+    }
+}
 
 app.get("/", (req, res) => {
     res.render("index");
@@ -189,12 +234,12 @@ app.get("/availability", (req, res) => {
     res.redirect('/search');
 });
 
-// Contact Us - accessible without login
 app.get("/contact", (req, res) => {
     res.render("contact");
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`Server is running on port http://localhost:${PORT}`);
+    await loadBookedSlots();
 });
