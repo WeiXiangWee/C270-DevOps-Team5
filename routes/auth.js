@@ -90,15 +90,4 @@ router.get('/logout', (req, res) => {
     });
 });
 
-// TEMPORARY - for testing admin view (remove before final submission)
-router.get('/make-admin/:email', (req, res) => {
-    const user = users.find(u => u.email === req.params.email);
-    if (user) {
-        user.role = 'admin';
-        res.send('User is now admin! Logout and login again to see changes.');
-    } else {
-        res.send('User not found');
-    }
-});
-
 module.exports = router;
