@@ -27,16 +27,16 @@ router.post('/facilities/add', async (req, res) => {
         return res.redirect('/dashboard');
     }
 
-    const { name, category, capacity } = req.body;
+    const { name, category, capacity, location, equipment, description, image } = req.body;
 
     try {
         await db.query(
             'INSERT INTO facilities (name, category, capacity, image, description, location, equipment) VALUES (?, ?, ?, ?, ?, ?, ?)',
             [name, category, parseInt(capacity),
-             'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600',
-             'No description available.',
-             'Sports Complex',
-             'To be updated']
+             image || 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600',
+             description || 'No description available.',
+             location || 'Sports Complex',
+             equipment || 'To be updated']
         );
         res.redirect('/facilities');
     } catch (err) {
@@ -68,12 +68,17 @@ router.post('/facilities/edit/:id', async (req, res) => {
         return res.redirect('/dashboard');
     }
 
-    const { name, category, capacity } = req.body;
+    const { name, category, capacity, location, equipment, description, image } = req.body;
 
     try {
         await db.query(
-            'UPDATE facilities SET name = ?, category = ?, capacity = ? WHERE id = ?',
-            [name, category, parseInt(capacity), req.params.id]
+            'UPDATE facilities SET name = ?, category = ?, capacity = ?, image = ?, description = ?, location = ?, equipment = ? WHERE id = ?',
+            [name, category, parseInt(capacity),
+             image || 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600',
+             description || 'No description available.',
+             location || 'Sports Complex',
+             equipment || 'To be updated',
+             req.params.id]
         );
         res.redirect('/facilities');
     } catch (err) {

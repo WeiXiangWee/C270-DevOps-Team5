@@ -7,80 +7,349 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        .hero-about {
-            background-color: #2d7a2d;
-            padding: 80px 0;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: system-ui, -apple-system, sans-serif; overflow-x: hidden; }
+
+        /* Back bar */
+        .back-bar {
+            background: white;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        /* Hero */
+        .hero-section {
+            background: linear-gradient(135deg, #1a4d2e 0%, #2d7a2d 60%, #4ade80 100%);
+            min-height: 55vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
             color: white;
         }
-        .breadcrumb-nav {
-            background-color: #f0f7f0;
-            padding: 12px 0;
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+            animation: pulse 4s ease-in-out infinite;
         }
-        .breadcrumb-nav a {
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        .floating {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+        .floating:nth-child(1) { top: 15%; left: 8%; animation-delay: 0s; }
+        .floating:nth-child(2) { top: 25%; right: 10%; animation-delay: 1s; }
+        .floating:nth-child(3) { bottom: 20%; left: 12%; animation-delay: 2s; }
+        .floating:nth-child(4) { bottom: 25%; right: 8%; animation-delay: 3s; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .hero-content { position: relative; z-index: 1; }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        .hero-title span { color: #86efac; }
+        .hero-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.85;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Sections */
+        .section { padding: 80px 0; }
+        .section-alt { background: #f8fdf8; }
+
+        /* Story */
+        .story-card {
+            background: white;
+            border-radius: 20px;
+            padding: 48px;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        .story-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #2d7a2d, #86efac);
+        }
+        .section-label {
+            font-size: 0.8rem;
+            font-weight: 700;
             color: #2d7a2d;
-            text-decoration: none;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
         }
-        .breadcrumb-nav a:hover {
-            text-decoration: underline;
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 20px;
+        }
+        .section-text {
+            color: #6b7280;
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+
+        /* Mission */
+        .mission-card {
+            background: linear-gradient(135deg, #1a4d2e, #2d7a2d);
+            border-radius: 20px;
+            padding: 48px;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .mission-card::before {
+            content: '🎯';
+            position: absolute;
+            font-size: 8rem;
+            opacity: 0.05;
+            right: -20px;
+            bottom: -20px;
+        }
+        .mission-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 1.8rem;
+        }
+        .mission-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        .mission-text {
+            opacity: 0.85;
+            line-height: 1.8;
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Values */
+        .value-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px 24px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+            border-bottom: 3px solid #2d7a2d;
+        }
+        .value-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        }
+        .value-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+        .value-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+        .value-desc {
+            font-size: 0.85rem;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        /* Stats */
+        .stats-section {
+            background: #2d7a2d;
+            padding: 50px 0;
+        }
+        .stat-item { text-align: center; color: white; }
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            display: block;
+            line-height: 1;
+        }
+        .stat-label { font-size: 0.9rem; opacity: 0.8; margin-top: 6px; }
+        .stat-divider {
+            width: 1px;
+            background: rgba(255,255,255,0.2);
+            height: 60px;
+        }
+
+        /* Fade animation */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Footer */
+        footer {
+            background: #111827;
+            color: rgba(255,255,255,0.6);
+            padding: 24px 0;
+            text-align: center;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2rem; }
+            .story-card { padding: 28px; }
+            .stat-divider { display: none; }
         }
     </style>
 </head>
-<body class="bg-light">
+<body>
 
-    <%- include('partials/navbar') %>
-
-    <!-- Breadcrumb -->
-    
-    <div class="breadcrumb-nav">
+    <!-- Back to Home -->
+    <div class="back-bar">
         <div class="container">
             <a href="/" class="text-decoration-none fw-semibold" style="color:#2d7a2d;">
-                <i class="bi bi-arrow-left me-1"></i>Home
+                <i class="bi bi-arrow-left me-1"></i>Back to Home
             </a>
         </div>
     </div>
 
-    <!-- Hero Banner -->
-    <div class="hero-about text-center">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <span class="floating">🏸</span>
+        <span class="floating">⚽</span>
+        <span class="floating">🏊</span>
+        <span class="floating">🏆</span>
+
+        <div class="container hero-content">
+            <div class="hero-badge">
+                <i class="bi bi-building me-1"></i>
+                RP Sports Complex
+            </div>
+            <h1 class="hero-title">
+                About <span>Our Complex</span>
+            </h1>
+            <p class="hero-subtitle">
+                World-class sports facilities for the RP community
+            </p>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats-section">
         <div class="container">
-            <h1 class="display-4 fw-bold mb-3">About RP Sports Complex</h1>
-            <p class="lead mb-0">Discover Your Sport, Shape Your Future</p>
+            <div class="d-flex justify-content-center align-items-center gap-5 flex-wrap">
+                <div class="stat-item fade-up">
+                    <span class="stat-number">8</span>
+                    <div class="stat-label">Sports Facilities</div>
+                </div>
+                <div class="stat-divider d-none d-md-block"></div>
+                <div class="stat-item fade-up">
+                    <span class="stat-number">500+</span>
+                    <div class="stat-label">Capacity (Competition Hall)</div>
+                </div>
+                <div class="stat-divider d-none d-md-block"></div>
+                <div class="stat-item fade-up">
+                    <span class="stat-number">FIFA</span>
+                    <div class="stat-label">Standard Football Field</div>
+                </div>
+                <div class="stat-divider d-none d-md-block"></div>
+                <div class="stat-item fade-up">
+                    <span class="stat-number">FIBA</span>
+                    <div class="stat-label">Standard Basketball Court</div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Our Story -->
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8 text-center">
-                <h2 class="fw-bold mb-3">
-                    Our <span style="color:#2d7a2d;">Story</span>
-                </h2>
-                <p class="text-muted fs-5">
-                    Established as part of Republic Polytechnic's School of 
-                    Sports and Health, the RP Sports Complex was built to 
-                    nurture students who are not just academically excellent, 
-                    but physically resilient and community-minded. Our 
-                    world-class facilities meet international standards from 
-                    organisations like FIBA and FIFA, giving every student, 
-                    staff member, and visitor the space to discover their 
-                    sport and shape their future.
-                </p>
+    <div class="section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-9 fade-up">
+                    <div class="story-card">
+                        <div class="row align-items-center g-4">
+                            <div class="col-md-6">
+                                <div class="section-label">Our Story</div>
+                                <h2 class="section-title">Built for the RP Community</h2>
+                                <p class="section-text">
+                                    Established as part of Republic Polytechnic's commitment
+                                    to holistic education, the RP Sports Complex was built
+                                    to nurture students who are not just academically excellent,
+                                    but physically resilient and community-minded.
+                                </p>
+                                <p class="section-text mt-3">
+                                    Our world-class facilities meet international standards
+                                    from organisations like FIBA and FIFA, giving every
+                                    student, staff member, and visitor the space to discover
+                                    their sport and shape their future.
+                                </p>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <div style="background: linear-gradient(135deg, #f0f7f0, #e8f5e8); border-radius: 16px; padding: 40px;">
+                                    <div style="font-size: 4rem; margin-bottom: 16px;">🏟️</div>
+                                    <div style="font-size: 1.1rem; font-weight: 700; color: #2d7a2d;">RP Sports Complex</div>
+                                    <div style="font-size: 0.85rem; color: #6b7280; margin-top: 8px;">9 Woodlands Avenue 9, Singapore 738964</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Our Mission -->
-    <div class="py-5" style="background-color:#f0f7f0;">
+    <div class="section section-alt">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
-                        <i class="bi bi-bullseye fs-1 mb-3" style="color:#2d7a2d;"></i>
-                        <h3 class="fw-bold mb-3">Our Mission</h3>
-                        <p class="text-muted fs-5 mb-0">
-                            To empower the RP community and beyond to become 
-                            active, resilient individuals through accessible 
-                            and convenient sports facilities — because we 
-                            believe physical wellbeing is just as important 
+                <div class="col-md-8 fade-up">
+                    <div class="mission-card">
+                        <div class="mission-icon">🎯</div>
+                        <h3 class="mission-title">Our Mission</h3>
+                        <p class="mission-text">
+                            To empower the RP community and beyond to become
+                            active, resilient individuals through accessible
+                            and convenient sports facilities — because we
+                            believe physical wellbeing is just as important
                             as academic excellence.
                         </p>
                     </div>
@@ -89,11 +358,62 @@
         </div>
     </div>
 
+    <!-- Our Values -->
+    <div class="section">
+        <div class="container">
+            <h2 class="fw-bold text-center mb-2 fade-up">Our <span style="color:#2d7a2d;">Values</span></h2>
+            <p class="text-center text-muted mb-5 fade-up">What drives us every day</p>
+            <div class="row g-4">
+                <div class="col-md-3 fade-up">
+                    <div class="value-card">
+                        <span class="value-icon">♿</span>
+                        <div class="value-title">Accessibility</div>
+                        <p class="value-desc">Making sports accessible to all members of the RP community</p>
+                    </div>
+                </div>
+                <div class="col-md-3 fade-up">
+                    <div class="value-card">
+                        <span class="value-icon">⭐</span>
+                        <div class="value-title">Excellence</div>
+                        <p class="value-desc">World-class facilities that meet international sports standards</p>
+                    </div>
+                </div>
+                <div class="col-md-3 fade-up">
+                    <div class="value-card">
+                        <span class="value-icon">🤝</span>
+                        <div class="value-title">Community</div>
+                        <p class="value-desc">Building a strong, active and healthy RP community together</p>
+                    </div>
+                </div>
+                <div class="col-md-3 fade-up">
+                    <div class="value-card">
+                        <span class="value-icon">💪</span>
+                        <div class="value-title">Resilience</div>
+                        <p class="value-desc">Encouraging physical and mental strength through sports</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
-    <footer class="py-4 text-white text-center" style="background-color:#2d7a2d;">
+    <footer>
         <p class="mb-0">© 2026 RP Sports Booking System | Republic Polytechnic</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-up').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
 </body>
 </html>

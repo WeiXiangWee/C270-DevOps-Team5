@@ -27,17 +27,17 @@
             justify-content: center;
             flex-shrink: 0;
         }
+        .back-bar {
+            background: white;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
     </style>
 </head>
 <body class="bg-light">
 
-    <!-- Only show navbar for PUBLIC (not logged in) -->
-    <% if (!locals.session || !locals.session.user) { %>
-        <%- include('partials/navbar') %>
-    <% } %>
-
     <!-- Back Button -->
-    <div style="background-color:#f0f7f0; padding: 12px 0; border-bottom: 0.5px solid #cce5d6;">
+    <div class="back-bar">
         <div class="container">
             <a href="<%= locals.session && locals.session.user ? '/dashboard' : '/' %>"
                class="text-decoration-none fw-semibold" style="color:#2d7a2d;">
