@@ -16,7 +16,7 @@ router.post('/register', async (req, res) => {
 
     if (!studentEmailRegex.test(email) && !staffEmailRegex.test(email)) {
         return res.render('register', {
-            message: 'Invalid email! Only RP student (@myrp.edu.sg) or staff (@rp.edu.sg) emails are allowed.'
+            message: 'Invalid email address!'
         });
     }
 
