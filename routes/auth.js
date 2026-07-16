@@ -12,7 +12,7 @@ router.post('/register', async (req, res) => {
 
     // Validate RP email format
     const studentEmailRegex = /^\d{8}@myrp\.edu\.sg$/;
-    const staffEmailRegex = /^\d{8}@rp\.edu\.sg$/;
+    const staffEmailRegex = /^[a-zA-Z0-9._%+-]+@rp\.edu\.sg$/;
 
     if (!studentEmailRegex.test(email) && !staffEmailRegex.test(email)) {
         return res.render('register', {
