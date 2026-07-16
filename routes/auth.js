@@ -3,18 +3,16 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const db = require('../db');
 
-// GET Register page
 router.get('/register', (req, res) => {
     res.render('register', { message: null });
 });
 
-// POST Register
 router.post('/register', async (req, res) => {
     const { name, email, phone, password, confirmPassword } = req.body;
 
     // Validate RP email format
     const studentEmailRegex = /^\d{8}@myrp\.edu\.sg$/;
-    const staffEmailRegex = /^\d{8}@rp\.edu\.sg$/;
+    const staffEmailRegex = /^[a-zA-Z0-9._%+-]+@rp\.edu\.sg$/;
 
     if (!studentEmailRegex.test(email) && !staffEmailRegex.test(email)) {
         return res.render('register', {
@@ -47,12 +45,10 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// GET Login page
 router.get('/login', (req, res) => {
     res.render('login', { message: null });
 });
 
-// POST Login
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -87,7 +83,6 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// GET Logout
 router.get('/logout', (req, res) => {
     req.session.destroy(() => {
         res.redirect('/');

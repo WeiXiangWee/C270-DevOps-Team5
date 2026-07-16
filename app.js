@@ -128,7 +128,6 @@ async function loadBookedSlots() {
     try {
         const db = require('./db');
 
-        // Load confirmed bookings
         const [bookings] = await db.query(
             "SELECT name, date, duration FROM bookings WHERE status = 'confirmed'"
         );
@@ -140,7 +139,6 @@ async function loadBookedSlots() {
             });
         });
 
-        // Load maintenance slots
         const [maintenanceList] = await db.query('SELECT * FROM maintenance');
         const timeSlots = [
             '07:00 – 09:00', '09:00 – 11:00', '11:00 – 13:00',
