@@ -418,6 +418,12 @@
 
     window.onload = function() {
         hidePastSlots();
+
+        // Show double booking error
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('error') === 'double_booking') {
+            alert('⚠️ You already have a booking at this time slot! Please choose a different time.');
+        }
     };
   </script>
 

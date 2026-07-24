@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const session = require("express-session");
 const app = express();
@@ -123,7 +124,6 @@ function getSlotsForDate(dateStr) {
 const bookedSlots = [];
 app.locals.bookedSlots = bookedSlots;
 
-// Load existing bookings and maintenance from DB on startup
 async function loadBookedSlots() {
     try {
         const db = require('./db');

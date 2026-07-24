@@ -1,6 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
+const nodemailer = require('nodemailer');
+require('dotenv').config();
+
+const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    },
+    tls: {
+        rejectUnauthorized: false
+    }
+});
 
 // GET - View all bookings
 router.get('/bookings', async (req, res) => {
@@ -58,6 +73,16 @@ router.get('/bookings/add', async (req, res) => {
     const { name, date, time } = req.query;
 
     try {
+        // Prevent double booking - check same user, same date, same time
+        const [existing] = await db.query(
+            'SELECT * FROM bookings WHERE userId = ? AND date = ? AND duration = ? AND status = ?',
+            [req.session.user.id, date, time, 'confirmed']
+        );
+
+        if (existing.length > 0) {
+            return res.redirect('/search?error=double_booking');
+        }
+
         await db.query(
             'INSERT INTO bookings (userId, userName, name, date, duration, remarks, status, remarks_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
             [req.session.user.id, req.session.user.name,
@@ -75,6 +100,45 @@ router.get('/bookings/add', async (req, res) => {
     }
 });
 
+// POST - User cancel own booking
+router.post('/bookings/user-cancel/:id', async (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+
+    try {
+        // Make sure booking belongs to this user
+        const [bookings] = await db.query(
+            'SELECT * FROM bookings WHERE id = ? AND userId = ?',
+            [req.params.id, req.session.user.id]
+        );
+
+        if (bookings.length === 0) {
+            return res.redirect('/bookings');
+        }
+
+        await db.query(
+            'UPDATE bookings SET status = ?, remarks = ?, remarks_status = ? WHERE id = ?',
+            ['cancelled', 'Cancelled by user', 'shown', req.params.id]
+        );
+
+        // Remove from bookedSlots array
+        const booking = bookings[0];
+        const bookedSlots = req.app.locals.bookedSlots;
+        const index = bookedSlots.findIndex(s =>
+            s.facility === booking.name &&
+            s.date === booking.date &&
+            s.time === booking.duration
+        );
+        if (index !== -1) bookedSlots.splice(index, 1);
+
+        res.redirect('/bookings');
+    } catch (err) {
+        console.error(err);
+        res.redirect('/bookings');
+    }
+});
+
 // POST - Admin cancel booking with reason
 router.post('/bookings/cancel/:id', async (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') {
@@ -84,10 +148,66 @@ router.post('/bookings/cancel/:id', async (req, res) => {
     const { reason } = req.body;
 
     try {
+        // Get booking details first
+        const [bookings] = await db.query(
+            'SELECT * FROM bookings WHERE id = ?',
+            [req.params.id]
+        );
+
+        if (bookings.length === 0) {
+            return res.redirect('/bookings');
+        }
+
+        const booking = bookings[0];
+
+        // Get user email
+        const [users] = await db.query(
+            'SELECT * FROM users WHERE id = ?',
+            [booking.userId]
+        );
+
         await db.query(
             'UPDATE bookings SET status = ?, remarks = ?, remarks_status = ? WHERE id = ?',
             ['cancelled', reason || 'Cancelled by admin', 'pending', req.params.id]
         );
+
+        // Send email to user
+        if (users.length > 0) {
+            const user = users[0];
+            await transporter.sendMail({
+                from: `"RP Sports Booking" <${process.env.EMAIL_USER}>`,
+                to: user.email,
+                subject: 'Booking Cancellation Notice - RP Sports Booking',
+                html: `
+                    <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto;">
+                        <div style="background-color: #1a4d2e; padding: 20px; text-align: center;">
+                            <h2 style="color: white; margin: 0;">RP Sports Booking</h2>
+                        </div>
+                        <div style="padding: 30px; background: #f9f9f9;">
+                            <h3 style="color: #c0392b;">Booking Cancellation Notice</h3>
+                            <p>Dear <strong>${user.name}</strong>,</p>
+                            <p>Your booking has been cancelled by the admin.</p>
+                            <div style="background: #fff; border: 1px solid #ddd; 
+                                        border-radius: 8px; padding: 16px; margin: 16px 0;">
+                                <p><strong>Facility:</strong> ${booking.name}</p>
+                                <p><strong>Date:</strong> ${booking.date}</p>
+                                <p><strong>Time:</strong> ${booking.duration}</p>
+                                <p><strong>Reason:</strong> ${reason || 'Cancelled by admin'}</p>
+                            </div>
+                            <p style="color: #666;">
+                                Please login to the system to make a new booking.
+                            </p>
+                        </div>
+                        <div style="background-color: #1a4d2e; padding: 15px; text-align: center;">
+                            <p style="color: white; margin: 0; font-size: 12px;">
+                                © 2026 RP Sports Booking System | Republic Polytechnic
+                            </p>
+                        </div>
+                    </div>
+                `
+            });
+        }
+
         res.redirect('/bookings');
     } catch (err) {
         console.error(err);
