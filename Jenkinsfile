@@ -25,10 +25,17 @@ pipeline {
             }
         }
 
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t c270-devops-team5 .'
+            }
+        }
+
         stage('Verify Project') {
             steps {
                 sh 'node --version'
                 sh 'npm --version'
+                sh 'docker images'
             }
         }
     }
