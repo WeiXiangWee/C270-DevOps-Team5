@@ -253,17 +253,14 @@
           <div style="margin-bottom: 14px;">
             <div class="field-label"><i class="bi bi-building"></i> Facility</div>
             <select name="facility">
-              <option value="">All facilities</option>
-              <option value="Competition Hall" <%= selectedFacility === 'Competition Hall' ? 'selected' : '' %>>Competition Hall</option>
-              <option value="Badminton Hall (6 Courts)" <%= selectedFacility === 'Badminton Hall (6 Courts)' ? 'selected' : '' %>>Badminton Hall (6 Courts)</option>
-              <option value="Table Tennis Hall (6 Tables)" <%= selectedFacility === 'Table Tennis Hall (6 Tables)' ? 'selected' : '' %>>Table Tennis Hall (6 Tables)</option>
-              <option value="Multi-Purpose Hall" <%= selectedFacility === 'Multi-Purpose Hall' ? 'selected' : '' %>>Multi-Purpose Hall</option>
-              <option value="Tennis / Basketball / Futsal Court" <%= selectedFacility === 'Tennis / Basketball / Futsal Court' ? 'selected' : '' %>>Tennis / Basketball / Futsal Court</option>
-              <option value="Football and Rugby Field" <%= selectedFacility === 'Football and Rugby Field' ? 'selected' : '' %>>Football and Rugby Field</option>
-              <option value="Swimming Pool" <%= selectedFacility === 'Swimming Pool' ? 'selected' : '' %>>Swimming Pool</option>
-              <option value="Martial Arts Room" <%= selectedFacility === 'Martial Arts Room' ? 'selected' : '' %>>Martial Arts Room</option>
-            </select>
-          </div>
+    <option value="">All facilities</option>
+    <% facilities.forEach(f => { %>
+    <option value="<%= f.name %>"
+            <%= selectedFacility === f.name ? 'selected' : '' %>>
+        <%= f.name %>
+    </option>
+    <% }) %>
+</select>
 
           <div style="margin-bottom: 14px;">
             <div class="field-label"><i class="bi bi-calendar3"></i> Date</div>
