@@ -27,7 +27,7 @@ services:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=c270
     ports:
-      - "3306:3306"          # optional: lets you connect from MySQL Workbench on your laptop too
+      - "3307:3306"          # optional: lets you connect from MySQL Workbench on your laptop too
     volumes:
       - db_data:/var/lib/mysql   # keeps your data even if the container is removed/recreated
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql   # auto-runs ONLY when the DB is empty (first start)
