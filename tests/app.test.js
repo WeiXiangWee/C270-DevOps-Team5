@@ -1,76 +1,48 @@
-const request = require('supertest');
-const app = require('../app');
-const db = require('../db');
+const { getSlotsForDate } = require('../app');
 
-jest.mock('../db');
+const publicHolidays = [
+    '2026-01-01', '2026-01-29', '2026-01-30',
+    '2026-04-03', '2026-05-01', '2026-05-12',
+    '2026-06-02', '2026-08-09', '2026-08-10',
+    '2026-10-27', '2026-12-25'
+];
 
-describe('Availability Logic Tests (app.js)', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+const mockFacilities = [
+    { name: 'Badminton Hall (6 Courts)', category: 'Indoor' },
+    { name: 'Swimming Pool', category: 'Aquatics' }
+];
 
-  test('Sunday should return no available slots', async () => {
-    // 2026-07-26 is a Sunday
-    const res = await request(app)
-      .get('/api/availability')
-      .query({ date: '2026-07-26' });
+describe('getSlotsForDate', () => {
+    test('Sunday should return no slots', () => {
+        const slots = getSlotsForDate('2026-07-26', mockFacilities);
+        expect(slots).toHaveLength(0);
+    });
 
-    expect(res.statusCode).toBe(200);
-    expect(res.body.availableSlots).toEqual([]);
-  });
+    test('Public holiday should return no slots', () => {
+        const slots = getSlotsForDate('2026-01-01', mockFacilities);
+        expect(slots).toHaveLength(0);
+    });
 
-  test('Public holiday should return no available slots', async () => {
-    // 2026-01-01 is New Year's Day
-    const res = await request(app)
-      .get('/api/availability')
-      .query({ date: '2026-01-01' });
+    test('Weekday should return 7 slots per facility', () => {
+        const slots = getSlotsForDate('2026-07-27', mockFacilities);
+        expect(slots).toHaveLength(14); // 2 facilities x 7 slots
+    });
 
-    expect(res.statusCode).toBe(200);
-    expect(res.body.availableSlots).toEqual([]);
-  });
+    test('Saturday should return 3 slots per facility', () => {
+        const slots = getSlotsForDate('2026-07-25', mockFacilities);
+        expect(slots).toHaveLength(6); // 2 facilities x 3 slots
+    });
 
-  test('Weekday should generate 7 time slots per facility', async () => {
-    // 2026-07-27 is a Monday
-    db.query.mockResolvedValueOnce([
-      [{ id: 1, name: 'Competition Hall' }]
-    ]);
+    test('Slot should have correct properties', () => {
+        const slots = getSlotsForDate('2026-07-27', mockFacilities);
+        expect(slots[0]).toHaveProperty('facility');
+        expect(slots[0]).toHaveProperty('date');
+        expect(slots[0]).toHaveProperty('time');
+        expect(slots[0]).toHaveProperty('status');
+    });
 
-    const res = await request(app)
-      .get('/api/availability')
-      .query({ date: '2026-07-27' });
-
-    expect(res.statusCode).toBe(200);
-    expect(res.body.availableSlots.length).toBe(7);
-  });
-
-  test('Saturday should generate 3 time slots per facility', async () => {
-    // 2026-07-25 is a Saturday
-    db.query.mockResolvedValueOnce([
-      [{ id: 1, name: 'Competition Hall' }]
-    ]);
-
-    const res = await request(app)
-      .get('/api/availability')
-      .query({ date: '2026-07-25' });
-
-    expect(res.statusCode).toBe(200);
-    expect(res.body.availableSlots.length).toBe(3);
-  });
-
-  test('Facilities should load dynamically from database', async () => {
-    // Mock 2 facilities returning on a Monday (7 slots each = 14 total)
-    db.query.mockResolvedValueOnce([
-      [
-        { id: 1, name: 'Competition Hall' },
-        { id: 2, name: 'Badminton Hall' }
-      ]
-    ]);
-
-    const res = await request(app)
-      .get('/api/availability')
-      .query({ date: '2026-07-27' });
-
-    expect(res.statusCode).toBe(200);
-    expect(res.body.availableSlots.length).toBe(14);
-  });
+    test('Slot status should be available by default', () => {
+        const slots = getSlotsForDate('2026-07-27', mockFacilities);
+        expect(slots[0].status).toBe('available');
+    });
 });

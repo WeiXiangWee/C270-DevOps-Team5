@@ -281,7 +281,15 @@ app.get("/contact", (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, async () => {
-    console.log(`Server is running on port http://localhost:${PORT}`);
-    await loadBookedSlots();
-});
+
+if (require.main === module) {
+    app.listen(PORT, async () => {
+        console.log(`Server is running on port http://localhost:${PORT}`);
+        await loadBookedSlots();
+    });
+}
+
+module.exports = {
+    app,
+    getSlotsForDate
+};
