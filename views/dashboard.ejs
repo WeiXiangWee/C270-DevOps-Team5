@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - RP Sports Booking</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .admin-banner {
+            background-color: #1a4d2e;
+            border-radius: 20px;
+            padding: 50px;
+            color: white;
+            text-align: center;
+        }
+        .quick-link-card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .quick-link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            color: inherit;
+        }
+        .icon-circle {
+            width: 60px;
+            height: 60px;
+            background-color: #e8f5e8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .greeting-bar {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 16px 0;
+        }
+        .hero-section {
+            background-image: url('https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=1600');
+            background-size: cover;
+            background-position: center;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 80, 0, 0.6);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: white;
+        }
+        .btn-book-now {
+            background-color: white;
+            color: #2d7a2d;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .btn-book-now:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            color: #2d7a2d;
+        }
+        .btn-book-now .arrow-icon {
+            background-color: #2d7a2d;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+        .btn-book-now:hover .arrow-icon {
+            transform: translateX(4px);
+        }
+        .facility-card {
+            border: none;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .browse-btn {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .browse-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(45, 122, 45, 0.4) !important;
+            color: white;
+        }
+        .browse-arrow {
+            transition: transform 0.3s ease;
+        }
+        .browse-btn:hover .browse-arrow {
+            transform: translateX(5px);
+        }
+        .rule-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: default;
+        }
+        .rule-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <%- include('partials/navbarDashboard') %>
+
+    <% if (session.user.role === 'admin') { %>
+
+    <!-- ADMIN VIEW -->
+    <div class="container py-5">
+        <div class="admin-banner mb-5">
+            <i class="bi bi-shield-check fs-1 mb-2"></i>
+            <h2 class="fw-bold mb-3">Admin Control Panel</h2>
+            <p class="mb-0">Manage RP Sports facilities and bookings</p>
+        </div>
+
+        <h4 class="fw-bold mb-4">Admin Actions</h4>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <a href="/facilities" class="quick-link-card card p-4">
+                    <div class="icon-circle">
+                        <i class="bi bi-building fs-3" style="color:#2d7a2d;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Manage Facilities</h5>
+                    <p class="text-muted small mb-0">Add, edit or remove existing facilities</p>
+                </a>
+            </div>
+
+            <div class="col-md-4">
+                <a href="/bookings" class="quick-link-card card p-4">
+                    <div class="icon-circle">
+                        <i class="bi bi-calendar-check fs-3" style="color:#2d7a2d;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">All Bookings</h5>
+                    <p class="text-muted small mb-0">View and manage all reservations</p>
+                </a>
+            </div>
+
+            <div class="col-md-4">
+                <a href="/maintenance" class="quick-link-card card p-4">
+                    <div class="icon-circle">
+                        <i class="bi bi-tools fs-3" style="color:#2d7a2d;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Schedule Maintenance</h5>
+                    <p class="text-muted small mb-0">Block facilities for maintenance periods</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <% } else { %>
+
+    <!-- USER VIEW -->
+
+    <!-- Greeting Bar -->
+    <div class="greeting-bar">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="fw-bold mb-0">
+                    <%
+                        var hour = new Date().getHours();
+                        if (hour < 12) { %>Good Morning ☀️<% }
+                        else if (hour < 18) { %>Good Afternoon 🌤️<% }
+                        else { %>Good Evening 🌙<% }
+                    %>, <%= session.user.name %>!
+                </h5>
+                <small class="text-muted">
+                    <%= new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) %>
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h2 class="fw-bold mb-2">Your Space To Train,</h2>
+            <h2 class="fw-bold mb-4">Compete and Grow</h2>
+            <a href="/search" class="btn-book-now">
+                Book Now
+                <span class="arrow-icon">
+                    <i class="bi bi-arrow-right"></i>
+                </span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Facilities Carousel -->
+    <div class="container py-4">
+        <div class="text-center mb-4">
+            <h4 class="fw-bold mb-1">Ready to Break a Sweat? 💪</h4>
+            <p class="text-muted">Explore what RP Sports has to offer</p>
+        </div>
+
+        <div class="position-relative">
+            <button class="btn position-absolute top-50 start-0 translate-middle-y z-1 rounded-circle shadow"
+                    style="background-color:#2d7a2d; color:white; width:40px; height:40px; border:none; margin-left:-20px;"
+                    onclick="changeSlide(-1)">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+
+            <div class="card facility-card mx-auto" style="max-width:600px;">
+                <div style="position:relative;">
+                    <img id="facilityImg" src="" alt=""
+                         style="width:100%; height:280px; object-fit:cover; transition: opacity 0.5s ease;">
+                    <div style="position:absolute; bottom:0; left:0; right:0;
+                                background:linear-gradient(transparent, rgba(0,0,0,0.7)); padding:20px;">
+                        <span id="facilityCat" class="badge mb-2" style="background-color:#2d7a2d;"></span>
+                        <h5 id="facilityName" class="text-white fw-bold mb-0"></h5>
+                    </div>
+                </div>
+                <div class="card-body p-3">
+                    <p id="facilityDesc" class="text-muted small mb-0"></p>
+                </div>
+            </div>
+
+            <button class="btn position-absolute top-50 end-0 translate-middle-y z-1 rounded-circle shadow"
+                    style="background-color:#2d7a2d; color:white; width:40px; height:40px; border:none; margin-right:-20px;"
+                    onclick="changeSlide(1)">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+
+        <div class="text-center mt-3 mb-4" id="dots"></div>
+
+        <div class="text-center mt-3">
+            <a href="/facilities" class="btn fw-bold px-5 py-2 text-white browse-btn"
+               style="background-color:#2d7a2d; border-radius:50px;">
+                <i class="bi bi-grid"></i>
+                <span>Browse All Facilities</span>
+                <i class="bi bi-arrow-right browse-arrow"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Rules Section -->
+    <div class="container pb-5">
+        <h5 class="fw-bold text-center mb-1">Before You Play! 🏃</h5>
+        <p class="text-muted text-center small mb-4">Here's what to know before heading to the facility</p>
+        <div class="row row-cols-3 row-cols-md-6 g-3 text-center">
+
+            <div class="col">
+                <div class="rule-card card border-0 shadow-sm p-3 rounded-3" style="background-color:#f0f7f0;">
+                    <div class="fs-2 mb-1">👟</div>
+                    <div class="small text-success fw-semibold">Sports Shoes</div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="rule-card card border-0 shadow-sm p-3 rounded-3" style="background-color:#f0f7f0;">
+                    <div class="fs-2 mb-1">👕</div>
+                    <div class="small text-success fw-semibold">Sports Attire</div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="rule-card card border-0 shadow-sm p-3 rounded-3" style="background-color:#f0f7f0;">
+                    <div class="fs-2 mb-1">🪪</div>
+                    <div class="small text-success fw-semibold">Bring Your Card</div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="rule-card card border-0 shadow-sm p-3 rounded-3" style="background-color:#fff0f0;">
+                    <div class="fs-2 mb-1">🩴</div>
+                    <div class="small text-danger fw-semibold">No Slippers</div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="rule-card card border-0 shadow-sm p-3 rounded-3" style="background-color:#fff0f0;">
+                    <div class="fs-2 mb-1">🍔</div>
+                    <div class="small text-danger fw-semibold">No Food</div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="rule-card card border-0 shadow-sm p-3 rounded-3" style="background-color:#fff0f0;">
+                    <div class="fs-2 mb-1">🚭</div>
+                    <div class="small text-danger fw-semibold">No Smoking</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <% } %>
+
+    <footer class="py-4 text-white text-center" style="background-color:#2d7a2d;">
+        <p class="mb-0">© 2026 RP Sports Booking System | Republic Polytechnic</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const facilities = [
+            {
+                name: 'Badminton Hall (6 Courts)',
+                category: 'Indoor',
+                image: 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=600',
+                description: '6 professional badminton courts with wooden flooring.'
+            },
+            {
+                name: 'Swimming Pool',
+                category: 'Aquatics',
+                image: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?w=600',
+                description: 'Olympic-size pool with warm-up pool and baby wading pool.'
+            },
+            {
+                name: 'Competition Hall',
+                category: 'Indoor',
+                image: 'https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=600',
+                description: 'Fully air-conditioned hall for basketball, volleyball and netball.'
+            },
+            {
+                name: 'Football and Rugby Field',
+                category: 'Outdoor',
+                image: 'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=600',
+                description: 'Full size football and rugby field with 500-pax seating gallery.'
+            },
+            {
+                name: 'Martial Arts Room',
+                category: 'Indoor',
+                image: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?w=600',
+                description: '50 persons capacity with tatami mats provided.'
+            },
+            {
+                name: 'Table Tennis Hall (6 Tables)',
+                category: 'Indoor',
+                image: 'https://images.unsplash.com/photo-1611251135345-18c56206b863?w=600',
+                description: '6 table tennis tables available for booking and casual play.'
+            },
+            {
+                name: 'Multi-Purpose Hall',
+                category: 'Indoor',
+                image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600',
+                description: 'Versatile hall suitable for various sports and indoor activities.'
+            },
+            {
+                name: 'Tennis / Basketball / Futsal Court',
+                category: 'Outdoor',
+                image: 'https://images.unsplash.com/photo-1505666287802-931dc83948e9?w=600',
+                description: 'Multi-purpose outdoor court for tennis, basketball and futsal.'
+            }
+        ];
+
+        let current = 0;
+        let autoSlide;
+
+        function updateCard(index) {
+            const f = facilities[index];
+            const img = document.getElementById('facilityImg');
+            img.style.opacity = '0';
+            setTimeout(() => {
+                img.src = f.image;
+                img.alt = f.name;
+                document.getElementById('facilityName').textContent = f.name;
+                document.getElementById('facilityCat').textContent = f.category;
+                document.getElementById('facilityDesc').textContent = f.description;
+                img.style.opacity = '1';
+            }, 300);
+            document.querySelectorAll('.dot').forEach((dot, i) => {
+                dot.style.backgroundColor = i === index ? '#2d7a2d' : '#d1d5db';
+            });
+        }
+
+        function changeSlide(direction) {
+            current = (current + direction + facilities.length) % facilities.length;
+            updateCard(current);
+            resetAutoSlide();
+        }
+
+        function resetAutoSlide() {
+            clearInterval(autoSlide);
+            autoSlide = setInterval(() => {
+                current = (current + 1) % facilities.length;
+                updateCard(current);
+            }, 3000);
+        }
+
+        const dotsContainer = document.getElementById('dots');
+        facilities.forEach((_, i) => {
+            const dot = document.createElement('span');
+            dot.className = 'dot';
+            dot.style.cssText = 'display:inline-block; width:8px; height:8px; border-radius:50%; margin:0 4px; cursor:pointer; transition:background-color 0.3s;';
+            dot.style.backgroundColor = i === 0 ? '#2d7a2d' : '#d1d5db';
+            dot.onclick = () => { current = i; updateCard(i); resetAutoSlide(); };
+            dotsContainer.appendChild(dot);
+        });
+
+        updateCard(0);
+        resetAutoSlide();
+    </script>
+</body>
+</html>

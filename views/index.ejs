@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RP Sports Booking</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: system-ui, -apple-system, sans-serif; overflow-x: hidden; }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+            padding: 16px 24px;
+            background: transparent;
+        }
+        .navbar.scrolled {
+            background: white !important;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        .navbar.scrolled .nav-link {
+            color: #2d7a2d !important;
+        }
+        .navbar-brand img {
+            filter: brightness(0) invert(1);
+            transition: filter 0.3s ease;
+        }
+        .navbar.scrolled .navbar-brand img {
+            filter: none;
+        }
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: white !important; }
+        .btn-login {
+            background: white;
+            color: #2d7a2d !important;
+            padding: 8px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .navbar.scrolled .btn-login {
+            background: #2d7a2d;
+            color: white !important;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Hero */
+        .hero-section {
+            background-image: url('/rp.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(0,60,0,0.85) 0%, rgba(0,100,0,0.7) 100%);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: white;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            backdrop-filter: blur(10px);
+        }
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+        .hero-title span { color: #86efac; }
+        .hero-subtitle {
+            font-size: 1.15rem;
+            opacity: 0.85;
+            margin-bottom: 40px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .btn-hero {
+            background: white;
+            color: #2d7a2d;
+            padding: 14px 40px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .btn-hero:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            color: #2d7a2d;
+        }
+
+        /* Floating elements */
+        .floating {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.15;
+            animation: float 6s ease-in-out infinite;
+        }
+        .floating:nth-child(1) { top: 15%; left: 8%; animation-delay: 0s; }
+        .floating:nth-child(2) { top: 25%; right: 10%; animation-delay: 1s; }
+        .floating:nth-child(3) { bottom: 30%; left: 5%; animation-delay: 2s; }
+        .floating:nth-child(4) { bottom: 20%; right: 8%; animation-delay: 3s; }
+        .floating:nth-child(5) { top: 50%; left: 15%; animation-delay: 1.5s; }
+        .floating:nth-child(6) { top: 40%; right: 15%; animation-delay: 2.5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        /* Stats */
+        .stats-section {
+            background: #2d7a2d;
+            padding: 50px 0;
+        }
+        .stat-item { text-align: center; color: white; }
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            display: block;
+            line-height: 1;
+        }
+        .stat-label { font-size: 0.9rem; opacity: 0.8; margin-top: 6px; }
+        .stat-divider {
+            width: 1px;
+            background: rgba(255,255,255,0.2);
+            height: 60px;
+        }
+
+        /* How it works */
+        .how-section {
+            padding: 80px 0;
+            background: #f8fdf8;
+        }
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .section-subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 50px;
+        }
+        .step-card {
+            background: white;
+            border-radius: 20px;
+            padding: 32px 24px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #2d7a2d, #86efac);
+        }
+        .step-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        }
+        .step-number {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #2d7a2d, #4ade80);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 800;
+            box-shadow: 0 4px 15px rgba(45,122,45,0.3);
+        }
+        .step-icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+        .step-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #111827;
+        }
+        .step-desc {
+            font-size: 0.875rem;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        /* CTA */
+        .cta-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #1a4d2e 0%, #2d7a2d 100%);
+            text-align: center;
+            color: white;
+        }
+        .cta-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        .cta-subtitle {
+            opacity: 0.8;
+            margin-bottom: 36px;
+            font-size: 1.05rem;
+        }
+
+        /* Footer */
+        footer {
+            background: #111827;
+            color: rgba(255,255,255,0.6);
+            padding: 24px 0;
+            text-align: center;
+            font-size: 0.875rem;
+        }
+
+        /* Scroll animation */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.2rem; }
+            .stat-divider { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <%- include('partials/navbar') %>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-overlay"></div>
+
+        <span class="floating">🏸</span>
+        <span class="floating">⚽</span>
+        <span class="floating">🏊</span>
+        <span class="floating">🏀</span>
+        <span class="floating">🥋</span>
+        <span class="floating">🎾</span>
+
+        <div class="container hero-content">
+            <div class="hero-badge">
+                <i class="bi bi-lightning-fill me-1"></i>
+                RP Sports Complex
+            </div>
+            <h1 class="hero-title">
+                Discover Your Sport,<br>
+                <span>Shape Your Future</span>
+            </h1>
+            <p class="hero-subtitle">
+                Book your favourite sports facility online.
+                Real-time availability, instant confirmation.
+            </p>
+            <a href="/register" class="btn-hero">
+                Get Started <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats-section">
+        <div class="container">
+            <div class="d-flex justify-content-center align-items-center gap-5 flex-wrap">
+                <div class="stat-item fade-up">
+                    <span class="stat-number">8</span>
+                    <div class="stat-label">Sports Facilities</div>
+                </div>
+                <div class="stat-divider d-none d-md-block"></div>
+                <div class="stat-item fade-up">
+                    <span class="stat-number">7</span>
+                    <div class="stat-label">Daily Time Slots</div>
+                </div>
+                <div class="stat-divider d-none d-md-block"></div>
+                <div class="stat-item fade-up">
+                    <span class="stat-number">5+</span>
+                    <div class="stat-label">Sports Categories</div>
+                </div>
+                <div class="stat-divider d-none d-md-block"></div>
+                <div class="stat-item fade-up">
+                    <span class="stat-number">24/7</span>
+                    <div class="stat-label">Online Booking</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works Section -->
+    <div class="how-section">
+        <div class="container">
+            <h2 class="section-title fade-up">
+                How It <span style="color:#2d7a2d;">Works</span>
+            </h2>
+            <p class="section-subtitle fade-up">
+                Book your facility in 4 simple steps
+            </p>
+            <div class="row g-4">
+                <div class="col-md-3 fade-up">
+                    <div class="step-card">
+                        <span class="step-icon">📝</span>
+                        <div class="step-number">1</div>
+                        <div class="step-title">Register</div>
+                        <p class="step-desc">
+                            Create your account using your RP student or staff email
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-3 fade-up">
+                    <div class="step-card">
+                        <span class="step-icon">🔍</span>
+                        <div class="step-number">2</div>
+                        <div class="step-title">Browse</div>
+                        <p class="step-desc">
+                            Find the facility you want and check real-time availability
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-3 fade-up">
+                    <div class="step-card">
+                        <span class="step-icon">📅</span>
+                        <div class="step-number">3</div>
+                        <div class="step-title">Book</div>
+                        <p class="step-desc">
+                            Select your date and time slot and confirm your booking instantly
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-3 fade-up">
+                    <div class="step-card">
+                        <span class="step-icon">🏆</span>
+                        <div class="step-number">4</div>
+                        <div class="step-title">Play!</div>
+                        <p class="step-desc">
+                            Show your booking confirmation and enjoy your sports session
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="cta-section fade-up">
+        <div class="container">
+            <h2 class="cta-title">Ready to Book Your Facility?</h2>
+            <p class="cta-subtitle">
+                Join RP students and staff who book their sports facilities online!
+            </p>
+            <a href="/register" class="btn-hero">
+                Get Started Now <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p class="mb-0">© 2026 RP Sports Booking System | Republic Polytechnic</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Scroll fade animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-up').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
