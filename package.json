@@ -1,34 +1,6 @@
 {
-  "name": "c270-devops-team5",
-  "version": "1.0.0",
-  "description": "Hello Team 5",
-  "main": "app.js",
-  "scripts": {
-  "test": "jest"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/WeiXiangWee/C270-DevOps-Team5.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/WeiXiangWee/C270-DevOps-Team5/issues"
-  },
-  "homepage": "https://github.com/WeiXiangWee/C270-DevOps-Team5#readme",
   "dependencies": {
-    "bcryptjs": "^3.0.3",
-    "dotenv": "^16.4.5",
     "ejs": "^6.0.1",
-    "express": "^5.2.1",
-    "express-session": "^1.19.0",
-    "mysql2": "^3.22.5",
-    "nodemailer": "^9.0.3"
-  },
-  "devDependencies": {
-    "jest": "^30.4.2",
-    "supertest": "^7.2.2"
+    "express": "^5.2.1"
   }
 }
