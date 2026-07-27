@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Successful - RP Sports Booking</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <%- include('partials/navbarSimple') %>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+
+                <!-- Success Card -->
+                <div class="card border-0 shadow-sm rounded-4 p-5 text-center mb-4">
+                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-4"
+                         style="width:80px;height:80px;background-color:#e8f5e8;">
+                        <i class="bi bi-check-circle-fill" style="font-size:3rem;color:#2d7a2d;"></i>
+                    </div>
+                    <h3 class="fw-bold mb-2">Booking Successful!</h3>
+                    <p class="text-muted mb-0">
+                        Your facility has been booked successfully.
+                        Please check your bookings for more details.
+                    </p>
+                </div>
+
+                <!-- Friendly Reminder Card -->
+                <div class="card border-0 rounded-4 p-4 mb-4"
+                     style="background-color:#f0f7f0; border-left: 4px solid #2d7a2d !important;">
+                    <h6 class="fw-bold mb-3" style="color:#2d7a2d;">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        Before You Head Out! 👟
+                    </h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="bi bi-check2 me-2" style="color:#2d7a2d;"></i>
+                            Wear proper sports attire and sports shoes
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check2 me-2" style="color:#2d7a2d;"></i>
+                            Bring your student/staff card for verification
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check2 me-2" style="color:#2d7a2d;"></i>
+                            Arrive on time — late arrivals may forfeit their slot
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check2 me-2" style="color:#2d7a2d;"></i>
+                            No outside food or drinks in the facility
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check2 me-2" style="color:#2d7a2d;"></i>
+                            Keep the facility clean and tidy after use
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check2 me-2" style="color:#2d7a2d;"></i>
+                            Report any damages to staff immediately
+                        </li>
+                        <li class="mb-0">
+                            <i class="bi bi-check2 me-2" style="color:#2d7a2d;"></i>
+                            Have fun and play safe! 🎉
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Dashboard Button at bottom -->
+                <div class="text-center">
+                    <a href="/dashboard" class="btn fw-bold text-white px-5 py-2"
+                       style="background-color:#2d7a2d; border-radius:50px;">
+                        <i class="bi bi-house me-2"></i>Back to Dashboard
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer class="py-4 text-white text-center mt-5" style="background-color:#2d7a2d;">
+        <p class="mb-0">© 2026 RP Sports Booking System | Republic Polytechnic</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

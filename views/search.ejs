@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facility Availability – RP Sports Complex</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --rp-green: #006633;
+      --rp-green-dark: #004d26;
+      --rp-green-pale: #e6f2ec;
+      --rp-green-mid: #cce5d6;
+    }
+
+    * { box-sizing: border-box; }
+    body { background: #f4f5f4; font-family: system-ui, -apple-system, sans-serif; }
+
+    .topbar {
+      background: var(--rp-green);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+    .topbar-logo {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .topbar-logo i { color: #fff; font-size: 18px; }
+    .topbar-title { color: #fff; font-size: 15px; font-weight: 600; line-height: 1.2; }
+    .topbar-sub { color: rgba(255,255,255,0.65); font-size: 12px; }
+    .topbar-badge {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 0.5px solid rgba(255,255,255,0.3);
+      display: flex; align-items: center; gap: 5px;
+    }
+    .back-link {
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-right: 16px;
+    }
+    .back-link:hover { color: #fff; }
+
+    .page-content {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .filter-panel {
+      background: #fff;
+      border: 0.5px solid #dde3dd;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .filter-header {
+      background: var(--rp-green-pale);
+      border-bottom: 0.5px solid var(--rp-green-mid);
+      padding: 13px 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .filter-header i { color: var(--rp-green); font-size: 16px; }
+    .filter-header span { font-size: 13px; font-weight: 600; color: var(--rp-green); }
+    .filter-body { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+
+    .field-label {
+      font-size: 11px; font-weight: 600;
+      color: #6b7280;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .filter-body select,
+    .filter-body input[type="date"] {
+      width: 100%; font-size: 13px;
+      padding: 8px 10px;
+      border: 0.5px solid #d1d5db;
+      border-radius: 8px;
+      background: #f9fafb;
+      color: #111827;
+    }
+
+    .divider { border: none; border-top: 0.5px solid var(--rp-green-mid); margin: 2px 0; }
+
+    .legend { display: flex; flex-direction: column; gap: 7px; }
+    .legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #4b5563; }
+    .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .dot-avail  { background: #16a34a; }
+    .dot-booked { background: #9ca3af; }
+    .dot-maint  { background: #d97706; }
+
+    .btn-search {
+      width: 100%; padding: 10px;
+      background: var(--rp-green); color: #fff;
+      border: none; border-radius: 8px;
+      font-size: 13px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      cursor: pointer;
+    }
+
+    .btn-reset {
+      width: 100%; padding: 9px;
+      background: transparent; color: #6b7280;
+      border: 0.5px solid #d1d5db; border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+      text-align: center;
+    }
+
+    .results-panel {
+      background: #fff;
+      border: 0.5px solid #dde3dd;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .results-header {
+      padding: 13px 18px;
+      border-bottom: 0.5px solid #e5e7eb;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .results-header-left { display: flex; align-items: center; gap: 8px; }
+    .results-header-left i { font-size: 16px; color: #6b7280; }
+    .results-title { font-size: 14px; font-weight: 600; color: #111827; }
+    .results-count {
+      font-size: 12px; color: #9ca3af;
+      background: #f3f4f6;
+      padding: 3px 9px; border-radius: 20px;
+      border: 0.5px solid #e5e7eb;
+    }
+
+    .slot-head {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1.3fr 110px 100px;
+      padding: 9px 18px;
+      background: #f9fafb;
+      border-bottom: 0.5px solid #e5e7eb;
+      gap: 8px;
+    }
+    .col-label {
+      font-size: 11px; font-weight: 600;
+      color: #9ca3af;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .slot-list { display: flex; flex-direction: column; }
+    .slot-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1.3fr 110px 100px;
+      align-items: center;
+      padding: 13px 18px;
+      border-bottom: 0.5px solid #f3f4f6;
+      gap: 8px;
+    }
+    .slot-row:last-child { border-bottom: none; }
+
+    .facility-name { font-size: 13px; font-weight: 600; color: #111827; }
+    .facility-type { font-size: 11px; color: #9ca3af; margin-top: 2px; display: flex; align-items: center; gap: 3px; }
+    .slot-date { font-size: 13px; color: #4b5563; }
+    .slot-time { font-size: 13px; color: #111827; display: flex; align-items: center; gap: 5px; }
+    .slot-time i { font-size: 13px; color: #9ca3af; }
+
+    .pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 9px; border-radius: 20px;
+      font-size: 11px; font-weight: 600;
+    }
+    .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .pill-avail  { background: #dcfce7; color: #15803d; }
+    .pill-booked { background: #f3f4f6; color: #6b7280; border: 0.5px solid #e5e7eb; }
+    .pill-maint  { background: #fef9c3; color: #a16207; }
+
+    .btn-book {
+      padding: 6px 13px; font-size: 12px; font-weight: 600;
+      border-radius: 8px; border: none; width: 100%;
+      display: block; text-align: center; text-decoration: none;
+    }
+    .btn-book-active { background: var(--rp-green); color: #fff; }
+    .btn-book-inactive { background: #f3f4f6; color: #9ca3af; pointer-events: none; }
+
+    .empty-state {
+      padding: 40px;
+      text-align: center;
+      color: #9ca3af;
+      font-size: 13px;
+    }
+
+    @media (max-width: 768px) {
+      .page-content { grid-template-columns: 1fr; }
+      .slot-head,
+      .slot-row { grid-template-columns: 1fr 1fr; }
+      .slot-head .col-label:nth-child(n+3),
+      .slot-row > *:nth-child(n+3) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top bar -->
+  <nav class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo">
+        <i class="bi bi-building"></i>
+      </div>
+      <div>
+        <div class="topbar-title">RP Sports Complex</div>
+        <div class="topbar-sub">Facility Availability &amp; Booking</div>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center;">
+      <a href="/dashboard" class="back-link">
+        <i class="bi bi-arrow-left"></i> Dashboard
+      </a>
+      <div class="topbar-badge">
+        <i class="bi bi-circle-fill" style="font-size:8px; color:#4ade80;"></i>
+        Live availability
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page body -->
+  <div class="page-content">
+
+    <!-- Filter panel -->
+    <div class="filter-panel">
+      <div class="filter-header">
+        <i class="bi bi-funnel-fill"></i>
+        <span>Filter facilities</span>
+      </div>
+      <div class="filter-body">
+
+        <form method="GET" action="/search">
+          <div style="margin-bottom: 14px;">
+            <div class="field-label"><i class="bi bi-building"></i> Facility</div>
+            <select name="facility">
+    <option value="">All facilities</option>
+    <% facilities.forEach(f => { %>
+    <option value="<%= f.name %>"
+            <%= selectedFacility === f.name ? 'selected' : '' %>>
+        <%= f.name %>
+    </option>
+    <% }) %>
+</select>
+
+          <div style="margin-bottom: 14px;">
+            <div class="field-label"><i class="bi bi-calendar3"></i> Date</div>
+            <input type="date" name="date" value="<%= selectedDate %>">
+          </div>
+
+          <hr class="divider">
+
+          <div>
+            <div class="field-label">Status key</div>
+            <div class="legend">
+              <div class="legend-row"><div class="legend-dot dot-avail"></div> Available</div>
+              <div class="legend-row"><div class="legend-dot dot-booked"></div> Booked</div>
+              <div class="legend-row"><div class="legend-dot dot-maint"></div> Under Maintenance</div>
+            </div>
+          </div>
+
+          <hr class="divider">
+
+          <button type="submit" class="btn-search" onclick="return validateDate()">
+            <i class="bi bi-search"></i> Search slots
+          </button>
+        </form>
+
+        <a href="/search" class="btn-reset">Reset filters</a>
+
+      </div>
+    </div>
+
+    <!-- Results panel -->
+    <div class="results-panel">
+      <div class="results-header">
+        <div class="results-header-left">
+          <i class="bi bi-list-ul"></i>
+          <span class="results-title">Available slots</span>
+        </div>
+        <span class="results-count"><%= slots.length %> slots</span>
+      </div>
+
+      <div class="slot-head">
+        <div class="col-label">Facility</div>
+        <div class="col-label">Date</div>
+        <div class="col-label">Time</div>
+        <div class="col-label">Status</div>
+        <div class="col-label"></div>
+      </div>
+
+      <div class="slot-list">
+        <% if (slots.length === 0) { %>
+        <div class="empty-state">
+            <% if (isClosed) { %>
+            <i class="bi bi-door-closed" style="font-size:2rem; display:block; margin-bottom:8px;"></i>
+            The sports complex is closed on this day.<br>
+            <small>We are closed on Sundays and Public Holidays.</small>
+            <% } else { %>
+            <i class="bi bi-calendar-x" style="font-size:2rem; display:block; margin-bottom:8px;"></i>
+            No slots found for your search.
+            <% } %>
+        </div>
+        <% } else { %>
+        <% slots.forEach(slot => { %>
+        <div class="slot-row">
+          <div>
+            <div class="facility-name"><%= slot.facility %></div>
+            <div class="facility-type">
+              <i class="bi bi-geo-alt" style="font-size:10px;"></i> <%= slot.type %>
+            </div>
+          </div>
+          <div class="slot-date"><%= slot.displayDate %></div>
+          <div class="slot-time"><i class="bi bi-clock"></i> <%= slot.time %></div>
+          <div>
+            <% if (slot.status === 'available') { %>
+            <span class="pill pill-avail"><span class="pill-dot"></span>Available</span>
+            <% } else if (slot.status === 'maintenance') { %>
+            <span class="pill pill-maint"><span class="pill-dot"></span>Maintenance</span>
+            <% } else { %>
+            <span class="pill pill-booked"><span class="pill-dot"></span>Booked</span>
+            <% } %>
+          </div>
+          <div>
+            <% if (slot.status === 'available') { %>
+            <a href="/bookings/add?name=<%= encodeURIComponent(slot.facility) %>&date=<%= slot.date %>&time=<%= encodeURIComponent(slot.time) %>"
+               class="btn-book btn-book-active">Book now</a>
+            <% } else { %>
+            <span class="btn-book btn-book-inactive">Unavailable</span>
+            <% } %>
+          </div>
+        </div>
+        <% }) %>
+        <% } %>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function validateDate() {
+        const dateInput = document.querySelector('input[name="date"]');
+        const selectedDate = new Date(dateInput.value);
+        const today = new Date();
+
+        today.setHours(0, 0, 0, 0);
+        selectedDate.setHours(0, 0, 0, 0);
+
+        if (dateInput.value && selectedDate < today) {
+            alert('The selected date is in the past! Please select today or a future date and try again.');
+            return false;
+        }
+
+        return true;
+    }
+
+    function hidePastSlots() {
+        const dateInput = document.querySelector('input[name="date"]');
+        if (!dateInput.value) return;
+
+        const selectedDate = new Date(dateInput.value);
+        const today = new Date();
+
+        const isToday = selectedDate.toDateString() === today.toDateString();
+        if (!isToday) return;
+
+        const currentHour = today.getHours();
+        const currentMinutes = today.getMinutes();
+
+        const slotRows = document.querySelectorAll('.slot-row');
+
+        slotRows.forEach(row => {
+            const timeEl = row.querySelector('.slot-time');
+            if (!timeEl) return;
+
+            const timeText = timeEl.textContent.trim();
+            const match = timeText.match(/(\d+):(\d+)/);
+            if (!match) return;
+
+            const slotHour = parseInt(match[1]);
+            const slotMinute = parseInt(match[2]);
+
+            if (slotHour < currentHour ||
+               (slotHour === currentHour && slotMinute <= currentMinutes)) {
+                row.style.display = 'none';
+            } else {
+                row.style.display = '';
+            }
+        });
+
+        const allSlots = document.querySelectorAll('.slot-row').length;
+        const hiddenSlots = document.querySelectorAll('.slot-row[style="display: none;"]').length;
+        const count = allSlots - hiddenSlots;
+        document.querySelector('.results-count').textContent = count + ' slots';
+    }
+
+    window.onload = function() {
+        hidePastSlots();
+
+        // Show double booking error
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('error') === 'double_booking') {
+            alert('⚠️ You already have a booking at this time slot! Please choose a different time.');
+        }
+    };
+  </script>
+
+</body>
+</html>
