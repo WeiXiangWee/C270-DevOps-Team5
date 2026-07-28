@@ -41,17 +41,16 @@ pipeline {
 
         stage('Deploy Application') {
             steps {
-                sh 'docker-compose down'
-                sh 'docker-compose up -d'
+                sh 'docker compose down'
+                sh 'docker compose up -d'
             }
         }
 
         stage('Verify Deployment') {
             steps {
-                sh 'docker-compose ps'
+                sh 'docker compose ps'
             }
         }
-    }
 
     post {
 
