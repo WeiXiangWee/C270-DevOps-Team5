@@ -38,6 +38,14 @@ pipeline {
                 sh 'docker images'
             }
         }
+
+        stage('Deploy') {
+        steps {
+                sh 'docker compose down'
+                sh 'docker compose up -d'
+            }
+        }
+        
     }
 
     post {
