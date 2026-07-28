@@ -7,7 +7,7 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
                 checkout scm
             }
@@ -31,7 +31,7 @@ pipeline {
             }
         }
 
-        stage('Verify Project') {
+        stage('Verify Build') {
             steps {
                 sh 'node --version'
                 sh 'npm --version'
@@ -39,22 +39,28 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-        steps {
+        stage('Deploy Application') {
+            steps {
                 sh 'docker compose down'
                 sh 'docker compose up -d'
             }
         }
-        
+
+        stage('Verify Deployment') {
+            steps {
+                sh 'docker compose ps'
+            }
+        }
     }
 
     post {
+
         success {
-            echo 'CI Pipeline completed successfully!'
+            echo 'CI/CD Pipeline completed successfully!'
         }
 
         failure {
-            echo 'CI Pipeline failed. Check the console output.'
+            echo 'CI/CD Pipeline failed. Check the console output.'
         }
     }
 }
