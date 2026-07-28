@@ -94,6 +94,40 @@ router.post('/facilities/delete/:id', async (req, res) => {
     }
 
     try {
+        // Get facility details first
+        const [facility] = await db.query(
+            'SELECT * FROM facilities WHERE id = ?',
+            [req.params.id]
+        );
+
+        if (facility.length === 0) {
+            return res.redirect('/facilities');
+        }
+
+        // Cancel all active bookings for this facility
+        const [activeBookings] = await db.query(
+            "SELECT * FROM bookings WHERE name = ? AND status = 'confirmed'",
+            [facility[0].name]
+        );
+
+        if (activeBookings.length > 0) {
+            await db.query(
+                "UPDATE bookings SET status = 'cancelled', remarks = ?, remarks_status = 'pending' WHERE name = ? AND status = 'confirmed'",
+                ['Facility has been removed from the system', facility[0].name]
+            );
+
+            // Remove from bookedSlots array
+            const bookedSlots = req.app.locals.bookedSlots;
+            const facilityName = facility[0].name;
+            const indexesToRemove = [];
+            bookedSlots.forEach((slot, index) => {
+                if (slot.facility === facilityName) {
+                    indexesToRemove.push(index);
+                }
+            });
+            indexesToRemove.reverse().forEach(index => bookedSlots.splice(index, 1));
+        }
+
         await db.query('DELETE FROM facilities WHERE id = ?', [req.params.id]);
         res.redirect('/facilities');
     } catch (err) {

@@ -44,9 +44,7 @@
             padding: 12px 0;
             border-bottom: 1px solid #f3f4f6;
         }
-        .detail-row:last-child {
-            border-bottom: none;
-        }
+        .detail-row:last-child { border-bottom: none; }
         .detail-icon {
             width: 36px;
             height: 36px;
@@ -104,11 +102,11 @@
                                class="btn btn-sm flex-grow-1 btn-outline-secondary">
                                 <i class="bi bi-pencil me-1"></i>Edit
                             </a>
-                            <form action="/facilities/delete/<%= facility.id %>" method="POST">
-                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-danger"
+                                    onclick="showDeleteModal(<%= facility.id %>, '<%= facility.name %>')">
+                                <i class="bi bi-trash"></i>
+                            </button>
                         </div>
                     </div>
                     <% } %>
@@ -126,9 +124,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
-
                     <img id="modalImg" src="" alt="" class="modal-img mb-4">
-
                     <div class="d-flex align-items-center gap-2 mb-2">
                         <span id="modalCategory" class="badge px-3 py-2"
                               style="background-color:#e8f5e8; color:#2d7a2d; font-size:0.85rem;"></span>
@@ -174,11 +170,53 @@
                             <p id="modalCapacity" class="mb-0 fw-semibold"></p>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Delete Facility Modal -->
+    <% if (session.user && session.user.role === 'admin') { %>
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content rounded-4 border-0">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-danger">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Delete Facility
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <strong>Warning!</strong> This is a dangerous action
+                        and cannot be undone!
+                    </div>
+                    <p>Are you sure you want to delete
+                       <strong id="deleteFacilityName"></strong>?</p>
+                    <p class="text-muted small">
+                        This facility will be permanently removed from the system.
+                        All active bookings for this facility will be 
+                        automatically cancelled and users will be notified.
+                    </p>
+                    <form id="deleteForm" method="POST">
+                        <div class="d-flex gap-2 justify-content-end mt-3">
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal">
+                                <i class="bi bi-x me-1"></i>Cancel
+                            </button>
+                            <button type="submit" class="btn btn-danger fw-bold">
+                                <i class="bi bi-trash me-1"></i>Yes, Delete
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %>
 
     <footer class="py-4 text-white text-center mt-5" style="background-color:#2d7a2d;">
         <p class="mb-0">© 2026 RP Sports Booking System | Republic Polytechnic</p>
@@ -205,6 +243,13 @@
             document.getElementById('modalEquipment').textContent = equipment;
 
             const modal = new bootstrap.Modal(document.getElementById('facilityModal'));
+            modal.show();
+        }
+
+        function showDeleteModal(facilityId, facilityName) {
+            document.getElementById('deleteFacilityName').textContent = facilityName;
+            document.getElementById('deleteForm').action = '/facilities/delete/' + facilityId;
+            const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
             modal.show();
         }
     </script>
