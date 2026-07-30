@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 - name: Configure AWS EC2 Server
+=======
+---
+- name: Configure Ubuntu Server and Deploy Facility Booking App
+>>>>>>> 30e77ebdf96778948705cf998e55b98868150099
   hosts: web
   become: yes
 
@@ -13,6 +18,7 @@
         name:
           - git
           - curl
+<<<<<<< HEAD
         state: present
 
     - name: Install Docker
@@ -38,3 +44,82 @@
         name:
           - docker-compose-v2
         state: present
+=======
+          - nginx
+          - mysql-client
+        state: present
+
+    - name: Add NodeSource repository
+      shell: |
+        curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+      args:
+        creates: /etc/apt/sources.list.d/nodesource.list
+
+    - name: Install Node.js
+      apt:
+        name: nodejs
+        state: present
+
+    - name: Install PM2 globally
+      community.general.npm:
+        name: pm2
+        global: true
+
+    - name: Clone Facility Booking repository
+      become: false
+      git:
+        repo: git@github.com:WeiXiangWee/C270-DevOps-Team5.git
+        dest: /home/geeta/facility-booking
+        version: main
+        update: yes
+        force: yes
+
+    - name: Install npm packages
+      become: false
+      community.general.npm:
+        path: /home/geeta/facility-booking
+        
+    - name: Stop existing PM2 application (if running)
+      become: false
+      shell: pm2 delete facility-booking || true
+
+    - name: Start application with PM2
+      become: false
+      shell: pm2 start app.js --name facility-booking
+      args:
+        chdir: /home/geeta/facility-booking
+
+    - name: Save PM2 process list
+      become: false
+      shell: pm2 save
+      
+    - name: Copy Nginx configuration
+      template:
+        src: templates/facility-booking.conf.j2
+        dest: /etc/nginx/sites-available/facility-booking
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Enable Nginx site
+      file:
+        src: /etc/nginx/sites-available/facility-booking
+        dest: /etc/nginx/sites-enabled/facility-booking
+        state: link
+        force: yes
+
+    - name: Remove default Nginx site
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Test Nginx configuration
+      command: nginx -t
+      changed_when: false
+
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
+        enabled: yes
+>>>>>>> 30e77ebdf96778948705cf998e55b98868150099

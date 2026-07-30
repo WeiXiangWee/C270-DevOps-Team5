@@ -7,10 +7,17 @@ services:
     ports:
       - "3000:3000"
     environment:
+<<<<<<< HEAD
       - DB_HOST=${DB_HOST}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
+=======
+      - DB_HOST=db          # matches the service name below, NOT localhost
+      - DB_USER=root
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=c270
+>>>>>>> 30e77ebdf96778948705cf998e55b98868150099
       - PORT=3000
       - EMAIL_USER=${EMAIL_USER}
       - EMAIL_PASS=${EMAIL_PASS}

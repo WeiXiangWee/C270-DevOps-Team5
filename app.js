@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+require('dotenv').config();
+>>>>>>> 30e77ebdf96778948705cf998e55b98868150099
 const express = require("express");
 const session = require("express-session");
 const app = express();
@@ -42,6 +46,7 @@ app.use('/', facilitiesRoutes);
 const bookingsRoutes = require('./routes/bookings');
 app.use('/', bookingsRoutes);
 
+<<<<<<< HEAD
 const facilities = [
     { name: 'Badminton Hall (6 Courts)', type: 'Indoor Hub' },
     { name: 'Swimming Pool', type: 'Aquatics' },
@@ -52,6 +57,54 @@ const facilities = [
     { name: 'Tennis / Basketball / Futsal Court', type: 'Outdoor' },
     { name: 'Martial Arts Room', type: 'Level 2' }
 ];
+=======
+app.get("/search", async (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+
+    const { facility, date } = req.query;
+    const today = new Date().toISOString().split('T')[0];
+    const selectedDate = date || today;
+    const selectedFacility = facility || '';
+
+    const [year, month, day] = selectedDate.split('-').map(Number);
+    const d = new Date(year, month - 1, day);
+    const isClosed = d.getDay() === 0 || publicHolidays.includes(selectedDate);
+
+    // Load facilities from database dynamically!
+    const db = require('./db');
+    const [dbFacilities] = await db.query('SELECT * FROM facilities');
+
+    let slots = getSlotsForDate(selectedDate, dbFacilities);
+
+    const bookedSlots = app.locals.bookedSlots;
+    slots = slots.map(slot => {
+        const bookedSlot = bookedSlots.find(b =>
+            b.facility === slot.facility &&
+            b.date === slot.date &&
+            b.time === slot.time
+        );
+        if (bookedSlot) {
+            return { ...slot, status: bookedSlot.maintenance ? 'maintenance' : 'booked' };
+        }
+        return slot;
+    });
+
+    if (selectedFacility !== '') {
+        slots = slots.filter(s => s.facility === selectedFacility);
+    }
+
+    res.render('search', {
+        slots,
+        selectedFacility,
+        selectedDate,
+        facilities: dbFacilities,
+        searched: req.query.facility !== undefined || req.query.date !== undefined,
+        isClosed
+    });
+});
+>>>>>>> 30e77ebdf96778948705cf998e55b98868150099
 
 const weekdayTimeSlots = [
     '07:00 – 09:00',
@@ -83,7 +136,11 @@ const publicHolidays = [
     '2026-12-25',
 ];
 
+<<<<<<< HEAD
 function getSlotsForDate(dateStr) {
+=======
+function getSlotsForDate(dateStr, facilitiesList) {
+>>>>>>> 30e77ebdf96778948705cf998e55b98868150099
     const [year, month, day] = dateStr.split('-').map(Number);
     const d = new Date(year, month - 1, day);
     const dayOfWeek = d.getDay();
@@ -103,12 +160,20 @@ function getSlotsForDate(dateStr) {
     const slots = [];
     let id = 1;
 
+<<<<<<< HEAD
     facilities.forEach(facility => {
+=======
+    facilitiesList.forEach(facility => {
+>>>>>>> 30e77ebdf96778948705cf998e55b98868150099
         timeSlots.forEach(time => {
             slots.push({
                 id: id++,
                 facility: facility.name,
+<<<<<<< HEAD
                 type: facility.type,
+=======
+                type: facility.category,
+>>>>>>> 30e77ebdf96778948705cf998e55b98868150099
                 date: dateStr,
                 displayDate: displayDate,
                 time: time,
@@ -123,7 +188,10 @@ function getSlotsForDate(dateStr) {
 const bookedSlots = [];
 app.locals.bookedSlots = bookedSlots;
 
+<<<<<<< HEAD
 // Load existing bookings and maintenance from DB on startup
+=======
+>>>>>>> 30e77ebdf96778948705cf998e55b98868150099
 async function loadBookedSlots() {
     try {
         const db = require('./db');
@@ -145,7 +213,13 @@ async function loadBookedSlots() {
             '13:00 – 15:00', '15:00 – 17:00', '17:00 – 19:00', '19:00 – 21:00'
         ];
 
+<<<<<<< HEAD
         maintenanceList.forEach(m => {
+=======
+        const [dbFacilitiesForLoad] = await db.query('SELECT * FROM facilities');
+
+maintenanceList.forEach(m => {
+>>>>>>> 30e77ebdf96778948705cf998e55b98868150099
             let currentDate = new Date(m.startDate);
             const endDateObj = new Date(m.endDate);
 
@@ -184,13 +258,20 @@ app.get("/dashboard", (req, res) => {
     res.render("dashboard");
 });
 
+<<<<<<< HEAD
 app.get("/search", (req, res) => {
+=======
+app.get("/search", async (req, res) => {
+>>>>>>> 30e77ebdf96778948705cf998e55b98868150099
     if (!req.session.user) {
         return res.redirect('/login');
     }
 
     const { facility, date } = req.query;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 30e77ebdf96778948705cf998e55b98868150099
     const today = new Date().toISOString().split('T')[0];
     const selectedDate = date || today;
     const selectedFacility = facility || '';
@@ -199,7 +280,15 @@ app.get("/search", (req, res) => {
     const d = new Date(year, month - 1, day);
     const isClosed = d.getDay() === 0 || publicHolidays.includes(selectedDate);
 
+<<<<<<< HEAD
     let slots = getSlotsForDate(selectedDate);
+=======
+    // Load facilities from database dynamically
+    const db = require('./db');
+    const [dbFacilities] = await db.query('SELECT * FROM facilities');
+
+    let slots = getSlotsForDate(selectedDate, dbFacilities);
+>>>>>>> 30e77ebdf96778948705cf998e55b98868150099
 
     const bookedSlots = app.locals.bookedSlots;
     slots = slots.map(slot => {
@@ -219,11 +308,20 @@ app.get("/search", (req, res) => {
     }
 
     res.render('search', {
+<<<<<<< HEAD
         slots: slots,
         selectedFacility: selectedFacility,
         selectedDate: selectedDate,
         searched: req.query.facility !== undefined || req.query.date !== undefined,
         isClosed: isClosed
+=======
+        slots,
+        selectedFacility,
+        selectedDate,
+        facilities: dbFacilities,
+        searched: req.query.facility !== undefined || req.query.date !== undefined,
+        isClosed
+>>>>>>> 30e77ebdf96778948705cf998e55b98868150099
     });
 });
 
@@ -239,7 +337,22 @@ app.get("/contact", (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
+<<<<<<< HEAD
 app.listen(PORT, async () => {
     console.log(`Server is running on port http://localhost:${PORT}`);
     await loadBookedSlots();
 });
+=======
+
+if (require.main === module) {
+    app.listen(PORT, async () => {
+        console.log(`Server is running on port http://localhost:${PORT}`);
+        await loadBookedSlots();
+    });
+}
+
+module.exports = {
+    app,
+    getSlotsForDate
+};
+>>>>>>> 30e77ebdf96778948705cf998e55b98868150099
