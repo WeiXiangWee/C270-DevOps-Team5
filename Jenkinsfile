@@ -35,6 +35,24 @@ pipeline {
 
 
 
+        stage('Run Ansible Infrastructure Setup') {
+
+            steps {
+
+                sh '''
+
+                cd ansible
+
+                ansible-playbook playbook.yml
+
+                '''
+
+            }
+
+        }
+
+
+
         stage('Install Dependencies') {
 
             steps {
@@ -97,24 +115,13 @@ pipeline {
                 -o StrictHostKeyChecking=no \
                 ${AWS_USER}@${AWS_HOST} "
 
-                    if [ ! -d ${APP_FOLDER} ]; then
-
-                        git clone ${REPOSITORY}
-
-                    fi
-
-
                     cd ${APP_FOLDER}
-
 
                     git pull origin main
 
-
                     docker compose down
 
-
                     docker compose up -d
-
 
                 "
 
