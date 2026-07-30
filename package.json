@@ -1,12 +1,4 @@
 {
-<<<<<<< HEAD
-  "dependencies": {
-    "bcryptjs": "^3.0.3",
-    "ejs": "^6.0.1",
-    "express": "^5.2.1",
-    "express-session": "^1.19.0",
-    "mysql2": "^3.23.1"
-=======
   "name": "c270-devops-team5",
   "version": "1.0.0",
   "description": "Hello Team 5",
@@ -38,6 +30,5 @@
   "devDependencies": {
     "jest": "^30.4.2",
     "supertest": "^7.2.2"
->>>>>>> 30e77ebdf96778948705cf998e55b98868150099
   }
 }
