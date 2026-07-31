@@ -31,6 +31,21 @@ pipeline {
             }
         }
 
+        stage('Vulnerability Scan (Trivy)') {
+            steps {
+                sh 'chmod +x trivy-scan.sh'
+                sh './trivy-scan.sh c270-devops-team5 HIGH,CRITICAL false'
+            }
+        }
+
+        stage('Archive Security Report') {
+            steps {
+                archiveArtifacts artifacts: 'trivy-report.txt', allowEmptyArchive: true
+            }
+        }
+
+
+
         stage('Verify Project') {
             steps {
                 sh 'node --version'
