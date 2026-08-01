@@ -23,6 +23,7 @@ echo "Severity filter: $SEVERITY"
 echo "Fail build on findings: $EXIT_ON_FAIL"
 echo "=================================================="
 
+
 if [ "$EXIT_ON_FAIL" = "true" ]; then
     TRIVY_EXIT_CODE=1
 else
@@ -33,16 +34,17 @@ fi
 docker run --rm \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v trivy-cache:/root/.cache/ \
-    -v "$(pwd):/output" \
+    -v "$(pwd):/workspace" \
     aquasec/trivy image \
     --severity "$SEVERITY" \
     --exit-code "$TRIVY_EXIT_CODE" \
     --format table \
-    --output "/output/$REPORT_FILE" \
+    --output "/workspace/$REPORT_FILE" \
     "$IMAGE_NAME"
 
 
 SCAN_RESULT=$?
+
 
 echo "--- Scan report ---"
 
@@ -59,6 +61,7 @@ if [ $SCAN_RESULT -ne 0 ]; then
     echo "Trivy found $SEVERITY vulnerabilities. Failing build."
     exit 1
 fi
+
 
 echo "Trivy scan completed."
 exit 0

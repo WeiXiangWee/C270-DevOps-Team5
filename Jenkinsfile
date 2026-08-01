@@ -96,7 +96,7 @@ pipeline {
 
         stage('Archive Security Report') {
             steps {
-                archiveArtifacts artifacts: 'trivy-report.txt', allowEmptyArchive: true
+                archiveArtifacts artifacts: '**/trivy-report.txt', allowEmptyArchive: true
             }
         }
 
@@ -129,7 +129,7 @@ pipeline {
 
                     cd ${APP_FOLDER}
 
-                    git pull origin main
+                    git pull origin main || exit 1
 
                     docker compose down
 
