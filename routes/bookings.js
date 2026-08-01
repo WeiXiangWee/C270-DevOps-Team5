@@ -322,6 +322,30 @@ router.post('/maintenance/delete/:id', async (req, res) => {
     }
 });
 
+// GET - API for n8n booking reminder
+router.get('/api/bookings/reminders', async (req, res) => {
+    try {
+        const [rows] = await db.query(`
+            SELECT 
+                u.name AS user_name,
+                u.email,
+                b.name AS facility,
+                b.date,
+                b.duration
+            FROM bookings b
+            JOIN users u 
+            ON b.userId = u.id
+            WHERE b.status = 'confirmed'
+        `);
 
+        res.json(rows);
+
+    } catch (err) {
+        console.error("Reminder API error:", err);
+        res.status(500).json({
+            error: "Failed to load reminders"
+        });
+    }
+});
 
 module.exports = router;
