@@ -36,7 +36,7 @@ fi
 
 docker run --rm \
     -v /var/run/docker.sock:/var/run/docker.sock \
-    -v "$WORKSPACE:/output" \
+    -v "$(pwd):/output" \
     -v trivy-cache:/root/.cache/ \
     aquasec/trivy image \
     --severity "$SEVERITY" \
