@@ -4,18 +4,25 @@ set -e
 # ============================================================
 # Trivy vulnerability scan script
 # Usage: ./trivy-scan.sh <image-name> [severity] [exit-on-fail]
+#
+# image-name    - Docker image to scan
+# severity      - HIGH,CRITICAL by default
+# exit-on-fail  - true/false
 # ============================================================
 
 IMAGE_NAME=$1
 SEVERITY=${2:-"HIGH,CRITICAL"}
 EXIT_ON_FAIL=${3:-"false"}
+
 REPORT_FILE="trivy-report.txt"
+
 
 if [ -z "$IMAGE_NAME" ]; then
     echo "Error: no image name provided."
     echo "Usage: ./trivy-scan.sh <image-name> [severity] [exit-on-fail]"
     exit 1
 fi
+
 
 echo "=================================================="
 echo "Scanning image: $IMAGE_NAME"
@@ -31,21 +38,25 @@ else
 fi
 
 
+# Run Trivy inside Docker
+# Mount Jenkins workspace so report stays after container exits
+
 docker run --rm \
     -v /var/run/docker.sock:/var/run/docker.sock \
+    -v "$(pwd):/output" \
     -v trivy-cache:/root/.cache/ \
-    -v "$(pwd):/workspace" \
     aquasec/trivy image \
     --severity "$SEVERITY" \
     --exit-code "$TRIVY_EXIT_CODE" \
     --format table \
-    --output "/workspace/$REPORT_FILE" \
+    --output "/output/$REPORT_FILE" \
     "$IMAGE_NAME"
 
 
 SCAN_RESULT=$?
 
 
+echo "--------------------"
 echo "--- Scan report ---"
 
 if [ -f "$REPORT_FILE" ]; then
@@ -63,5 +74,5 @@ if [ $SCAN_RESULT -ne 0 ]; then
 fi
 
 
-echo "Trivy scan completed."
+echo "Trivy scan completed successfully."
 exit 0
