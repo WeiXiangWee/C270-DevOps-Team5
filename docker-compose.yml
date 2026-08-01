@@ -1,11 +1,16 @@
 services:
 
-  # Your Node.js/Express app — built from the existing Dockerfile
+  # ==========================================
+  # Node.js / Express Application
+  # Connects to AWS RDS MySQL using .env
+  # ==========================================
   app:
     build: .
     container_name: c270-app
+
     ports:
       - "3000:3000"
+
     environment:
       - DB_HOST=${DB_HOST}
       - DB_USER=${DB_USER}
@@ -14,45 +19,25 @@ services:
       - PORT=3000
       - EMAIL_USER=${EMAIL_USER}
       - EMAIL_PASS=${EMAIL_PASS}
-    depends_on:
-      db:
-        condition: service_healthy   # wait until MySQL is actually ready, not just "started"
-    restart: unless-stopped
 
-  # MySQL database
-  db:
-    image: mysql:8.0
-    container_name: c270-db
-    environment:
-      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
-      - MYSQL_DATABASE=c270
-    ports:
-      - "3307:3306"          # optional: lets you connect from MySQL Workbench on your laptop too
-    volumes:
-      - db_data:/var/lib/mysql   # keeps your data even if the container is removed/recreated
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql   # auto-runs ONLY when the DB is empty (first start)
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p$$MYSQL_ROOT_PASSWORD"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
     restart: unless-stopped
 
 
-
-  # Reverse proxy — sits in front of the app so users hit port 80
-  # instead of needing http://localhost:3000
+  # ==========================================
+  # Nginx Reverse Proxy
+  # Users access through port 80
+  # ==========================================
   nginx:
     image: nginx:alpine
     container_name: c270-nginx
+
     ports:
       - "80:80"
+
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+
     depends_on:
       - app
+
     restart: unless-stopped
- 
-volumes:
-  db_data:
- 
