@@ -4,10 +4,6 @@ set -e
 # ============================================================
 # Trivy vulnerability scan script
 # Usage: ./trivy-scan.sh <image-name> [severity] [exit-on-fail]
-#
-# image-name    - Docker image to scan
-# severity      - HIGH,CRITICAL by default
-# exit-on-fail  - true/false
 # ============================================================
 
 IMAGE_NAME=$1
@@ -38,12 +34,9 @@ else
 fi
 
 
-# Run Trivy inside Docker
-# Mount Jenkins workspace so report stays after container exits
-
 docker run --rm \
     -v /var/run/docker.sock:/var/run/docker.sock \
-    -v "$(pwd):/output" \
+    -v "$WORKSPACE:/output" \
     -v trivy-cache:/root/.cache/ \
     aquasec/trivy image \
     --severity "$SEVERITY" \

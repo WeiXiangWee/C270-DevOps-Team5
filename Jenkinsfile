@@ -123,17 +123,25 @@ pipeline {
 
                 sh '''
 
+                echo "Copying latest code to AWS EC2..."
+
+                scp -i ${SSH_KEY} \
+                -o StrictHostKeyChecking=no \
+                -r ./* \
+                ${AWS_USER}@${AWS_HOST}:~/${APP_FOLDER}/
+
+
+                echo "Deploying application on AWS EC2..."
+
                 ssh -i ${SSH_KEY} \
                 -o StrictHostKeyChecking=no \
                 ${AWS_USER}@${AWS_HOST} "
 
                     cd ${APP_FOLDER}
 
-                    git pull origin main || exit 1
-
                     docker compose down
 
-                    docker compose up -d
+                    docker compose up -d --build
 
                 "
 
