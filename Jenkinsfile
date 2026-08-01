@@ -13,7 +13,7 @@ pipeline {
 
         // AWS EC2 connection details
         AWS_USER = "ubuntu"
-        AWS_HOST = "3.27.125.149"
+        AWS_HOST = "52.64.248.196"
         SSH_KEY = "/var/jenkins_home/RP-Sports-Booking.pem"
 
 
