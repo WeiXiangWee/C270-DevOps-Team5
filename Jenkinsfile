@@ -10,7 +10,7 @@ pipeline {
     environment {
 
         AWS_USER = "ubuntu"
-        AWS_HOST = "54.253.11.83"
+        AWS_HOST = "3.27.125.149"
         SSH_KEY = "/var/jenkins_home/RP-Sports-Booking.pem"
 
         APP_FOLDER = "C270-DevOps-Team5"
