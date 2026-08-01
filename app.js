@@ -43,6 +43,53 @@ app.use('/', facilitiesRoutes);
 const bookingsRoutes = require('./routes/bookings');
 app.use('/', bookingsRoutes);
 
+app.get("/search", async (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+
+    const { facility, date } = req.query;
+    const today = new Date().toISOString().split('T')[0];
+    const selectedDate = date || today;
+    const selectedFacility = facility || '';
+
+    const [year, month, day] = selectedDate.split('-').map(Number);
+    const d = new Date(year, month - 1, day);
+    const isClosed = d.getDay() === 0 || publicHolidays.includes(selectedDate);
+
+    // Load facilities from database dynamically!
+    const db = require('./db');
+    const [dbFacilities] = await db.query('SELECT * FROM facilities');
+
+    let slots = getSlotsForDate(selectedDate, dbFacilities);
+
+    const bookedSlots = app.locals.bookedSlots;
+    slots = slots.map(slot => {
+        const bookedSlot = bookedSlots.find(b =>
+            b.facility === slot.facility &&
+            b.date === slot.date &&
+            b.time === slot.time
+        );
+        if (bookedSlot) {
+            return { ...slot, status: bookedSlot.maintenance ? 'maintenance' : 'booked' };
+        }
+        return slot;
+    });
+
+    if (selectedFacility !== '') {
+        slots = slots.filter(s => s.facility === selectedFacility);
+    }
+
+    res.render('search', {
+        slots,
+        selectedFacility,
+        selectedDate,
+        facilities: dbFacilities,
+        searched: req.query.facility !== undefined || req.query.date !== undefined,
+        isClosed
+    });
+});
+
 const weekdayTimeSlots = [
     '07:00 – 09:00',
     '09:00 – 11:00',
@@ -134,7 +181,9 @@ async function loadBookedSlots() {
             '13:00 – 15:00', '15:00 – 17:00', '17:00 – 19:00', '19:00 – 21:00'
         ];
 
-        maintenanceList.forEach(m => {
+        const [dbFacilitiesForLoad] = await db.query('SELECT * FROM facilities');
+
+maintenanceList.forEach(m => {
             let currentDate = new Date(m.startDate);
             const endDateObj = new Date(m.endDate);
 
@@ -187,6 +236,7 @@ app.get("/search", async (req, res) => {
     const d = new Date(year, month - 1, day);
     const isClosed = d.getDay() === 0 || publicHolidays.includes(selectedDate);
 
+    // Load facilities from database dynamically
     const db = require('./db');
     const [dbFacilities] = await db.query('SELECT * FROM facilities');
 
