@@ -289,18 +289,18 @@ router.post('/maintenance/add', async (req, res) => {
             try {
 
                 await axios.post(
-                process.env.N8N_MAINTENANCE_WEBHOOK,
-                {
-                    name: booking.user_name,
-                    email: booking.email,
-                    facility: booking.facility,
-                    bookingDate: booking.date,
-                    timeSlot: booking.duration,
-                    startDate: startDate,
-                    endDate: endDate,
-                    reason: reason
-                }
-            );
+            process.env.N8N_MAINTENANCE_WEBHOOK,
+            {
+                name: booking.user_name,
+                email: booking.email,
+                facility: booking.facility,
+                bookingDate: booking.date,
+                timeSlot: booking.duration,
+                startDate: startDate,
+                endDate: endDate,
+                reason: reason
+            }
+        );
 
                 console.log(
                     'N8N maintenance notification sent to:',
