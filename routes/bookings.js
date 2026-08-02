@@ -66,9 +66,9 @@ router.get('/bookings', async (req, res) => {
         res.redirect('/dashboard');
     }
 });
-// WU Shutong's segment ends here //
+// Wu Shutong's segment ends here //
 
-// Geeta 's segment for booking management (add, cancel) //
+// Geeta's segment for booking management (add, cancel) //
 
 // GET - Book directly from search page
 router.get('/bookings/add', async (req, res) => {
@@ -79,7 +79,7 @@ router.get('/bookings/add', async (req, res) => {
     const { name, date, time } = req.query;
 
     try {
-        // Prevent double booking - check same user, same date, same time
+        // Prevent double booking
         const [existing] = await db.query(
             'SELECT * FROM bookings WHERE userId = ? AND date = ? AND duration = ? AND status = ?',
             [req.session.user.id, date, time, 'confirmed']
@@ -113,7 +113,6 @@ router.post('/bookings/user-cancel/:id', async (req, res) => {
     }
 
     try {
-        // Make sure booking belongs to this user
         const [bookings] = await db.query(
             'SELECT * FROM bookings WHERE id = ? AND userId = ?',
             [req.params.id, req.session.user.id]
@@ -128,7 +127,6 @@ router.post('/bookings/user-cancel/:id', async (req, res) => {
             ['cancelled', 'Cancelled by user', 'shown', req.params.id]
         );
 
-        // Remove from bookedSlots array
         const booking = bookings[0];
         const bookedSlots = req.app.locals.bookedSlots;
         const index = bookedSlots.findIndex(s =>
@@ -154,7 +152,6 @@ router.post('/bookings/cancel/:id', async (req, res) => {
     const { reason } = req.body;
 
     try {
-        // Get booking details first
         const [bookings] = await db.query(
             'SELECT * FROM bookings WHERE id = ?',
             [req.params.id]
@@ -166,7 +163,6 @@ router.post('/bookings/cancel/:id', async (req, res) => {
 
         const booking = bookings[0];
 
-        // Get user email
         const [users] = await db.query(
             'SELECT * FROM users WHERE id = ?',
             [booking.userId]
@@ -177,7 +173,6 @@ router.post('/bookings/cancel/:id', async (req, res) => {
             ['cancelled', reason || 'Cancelled by admin', 'pending', req.params.id]
         );
 
-        // Send email to user
         if (users.length > 0) {
             const user = users[0];
             await transporter.sendMail({
@@ -220,8 +215,9 @@ router.post('/bookings/cancel/:id', async (req, res) => {
         res.redirect('/bookings');
     }
 });
+// Geeta's segment ends here //
 
-// Yan and Wu shutong's segment add maintenance management for admin only//
+// Yan and Wu Shutong's segment for maintenance management //
 
 // GET - Show maintenance form (admin only)
 router.get('/maintenance', async (req, res) => {
@@ -249,70 +245,65 @@ router.post('/maintenance/add', async (req, res) => {
     const { facility, startDate, endDate, reason } = req.body;
 
     try {
+        // Step 1: Insert maintenance record
         await db.query(
             'INSERT INTO maintenance (facility, startDate, endDate, reason) VALUES (?, ?, ?, ?)',
             [facility, startDate, endDate, reason]
         );
 
+        // Step 2: Get affected bookings FIRST (before cancelling!)
+        const [affectedBookings] = await db.query(
+            `SELECT 
+                u.name AS user_name,
+                u.email,
+                b.name AS facility,
+                b.date,
+                b.duration
+            FROM bookings b
+            JOIN users u ON b.userId = u.id
+            WHERE b.name = ?
+            AND b.status = 'confirmed'
+            AND b.date BETWEEN ? AND ?`,
+            [facility, startDate, endDate]
+        );
+
+        console.log("Affected bookings:", affectedBookings);
+
+        // Step 3: Cancel the bookings (only once!)
         await db.query(
-            `UPDATE bookings SET status = 'cancelled', remarks = ?, remarks_status = 'pending'
-             WHERE name = ? AND date BETWEEN ? AND ? AND status = 'confirmed'`,
+            `UPDATE bookings 
+             SET status = 'cancelled', 
+                 remarks = ?, 
+                 remarks_status = 'pending'
+             WHERE name = ? 
+             AND date BETWEEN ? AND ? 
+             AND status = 'confirmed'`,
             [`Facility under maintenance: ${reason}`, facility, startDate, endDate]
         );
 
-        // Yan's n8n integration for maintenance cancellation workflow //
-
-        // Step 1: Get affected bookings FIRST (before cancelling!)
-const [affectedBookings] = await db.query(
-    `SELECT 
-        u.name AS user_name,
-        u.email,
-        b.name AS facility,
-        b.date,
-        b.duration
-    FROM bookings b
-    JOIN users u ON b.userId = u.id
-    WHERE b.name = ?
-    AND b.status = 'confirmed'
-    AND b.date BETWEEN ? AND ?`,
-    [facility, startDate, endDate]
-);
-
-console.log("Affected bookings:", affectedBookings);
-
-// Step 2: NOW cancel the bookings
-await db.query(
-    `UPDATE bookings 
-     SET status = 'cancelled', 
-         remarks = ?, 
-         remarks_status = 'pending'
-     WHERE name = ? 
-     AND date BETWEEN ? AND ? 
-     AND status = 'confirmed'`,
-    [`Facility under maintenance: ${reason}`, facility, startDate, endDate]
-);
-
-// Step 3: Send n8n notification for each affected booking
-for (const booking of affectedBookings) {
-    try {
-        await axios.post(
-            process.env.N8N_MAINTENANCE_WEBHOOK,
-            {
-                name: booking.user_name,
-                email: booking.email,
-                facility: booking.facility,
-                bookingDate: booking.date,
-                timeSlot: booking.duration,
-                startDate: startDate,
-                endDate: endDate,
-                reason: reason
+        // Step 4: Send n8n notification for each affected booking
+        for (const booking of affectedBookings) {
+            try {
+                await axios.post(
+                    process.env.N8N_MAINTENANCE_WEBHOOK,
+                    {
+                        name: booking.user_name,
+                        email: booking.email,
+                        facility: booking.facility,
+                        bookingDate: booking.date,
+                        timeSlot: booking.duration,
+                        startDate: startDate,
+                        endDate: endDate,
+                        reason: reason
+                    }
+                );
+                console.log('N8N notification sent to:', booking.email);
+            } catch (error) {
+                console.error('N8N webhook error:', error.message);
             }
-        );
-        console.log('N8N notification sent to:', booking.email);
-    } catch (error) {
-        console.error('N8N webhook error:', error.message);
-    }
-}
+        }
+
+        // Step 5: Add maintenance slots to bookedSlots array
         const bookedSlots = req.app.locals.bookedSlots;
         const timeSlots = [
             '07:00 – 09:00', '09:00 – 11:00', '11:00 – 13:00',
@@ -382,11 +373,11 @@ router.post('/maintenance/delete/:id', async (req, res) => {
         res.redirect('/maintenance');
     }
 });
-// Yan and Wu shutong's segment for maintenance management ends here//
+// Yan and Wu Shutong's segment ends here //
 
-// Yan's Segment for booking reminders API for n8n integration
+// Yan's segment for n8n API routes //
 
-// GET - API for n8n booking reminder
+// GET - Booking reminders API for n8n
 router.get('/api/bookings/reminders', async (req, res) => {
     try {
         const [rows] = await db.query(`
@@ -397,18 +388,13 @@ router.get('/api/bookings/reminders', async (req, res) => {
                 b.date,
                 b.duration
             FROM bookings b
-            JOIN users u 
-            ON b.userId = u.id
+            JOIN users u ON b.userId = u.id
             WHERE b.status = 'confirmed'
         `);
-
         res.json(rows);
-
     } catch (err) {
         console.error("Reminder API error:", err);
-        res.status(500).json({
-            error: "Failed to load reminders"
-        });
+        res.status(500).json({ error: "Failed to load reminders" });
     }
 });
 
