@@ -280,6 +280,8 @@ router.post('/maintenance/add', async (req, res) => {
             [facility, startDate, endDate]
         );
 
+        console.log("Affected bookings:", affectedBookings);
+
 
         // Send notification to n8n for each affected booking
         for (const booking of affectedBookings) {
