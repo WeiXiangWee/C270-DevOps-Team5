@@ -275,6 +275,7 @@ router.post('/maintenance/add', async (req, res) => {
             JOIN users u
             ON b.userId = u.id
             WHERE b.name = ?
+            AND b.status = 'confirmed'
             AND b.date BETWEEN ? AND ?
             `,
             [facility, startDate, endDate]
