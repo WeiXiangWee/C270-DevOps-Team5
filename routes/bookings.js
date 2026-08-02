@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const nodemailer = require('nodemailer');
+const axios = require('axios');
 require('dotenv').config();
 
 const transporter = nodemailer.createTransport({
@@ -258,6 +259,29 @@ router.post('/maintenance/add', async (req, res) => {
              WHERE name = ? AND date BETWEEN ? AND ? AND status = 'confirmed'`,
             [`Facility under maintenance: ${reason}`, facility, startDate, endDate]
         );
+
+        // Yan's n8n integration for maintenance cancellation workflow //
+
+        // Trigger n8n maintenance cancellation workflow
+        try {
+            await axios.post(
+                process.env.N8N_MAINTENANCE_WEBHOOK,
+                {
+                    facility,
+                    startDate,
+                    endDate,
+                    reason
+                }
+            );
+
+            console.log('N8N maintenance notification triggered');
+
+        } catch (error) {
+            console.error(
+                'N8N webhook error:',
+                error.message
+            );
+        }
 
         const bookedSlots = req.app.locals.bookedSlots;
         const timeSlots = [
