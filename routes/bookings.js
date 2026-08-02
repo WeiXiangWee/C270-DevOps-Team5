@@ -264,15 +264,14 @@ router.post('/maintenance/add', async (req, res) => {
 
         // Trigger n8n maintenance cancellation workflow
         try {
-            await axios.post(
-                process.env.N8N_MAINTENANCE_WEBHOOK,
-                {
-                    facility,
-                    startDate,
-                    endDate,
-                    reason
-                }
-            );
+            axios.post(process.env.N8N_MAINTENANCE_WEBHOOK, {
+                name: booking.user_name,
+                email: booking.email,
+                facility: facilityName,
+                startDate: startDate,
+                endDate: endDate,
+                reason: reason
+            });
 
             console.log('N8N maintenance notification triggered');
 
