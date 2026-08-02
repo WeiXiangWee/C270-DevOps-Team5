@@ -1,5 +1,10 @@
+// Test suite for validating facility information and requirements
 describe('Facility Validation', () => {
+
+
+    // Verify that each facility contains all required information
     test('Facility should have required fields', () => {
+
         const facility = {
             name: 'Badminton Hall (6 Courts)',
             category: 'Indoor',
@@ -9,6 +14,8 @@ describe('Facility Validation', () => {
             location: 'Level 2, Sports Complex',
             equipment: 'Badminton nets provided'
         };
+
+        // Check that all important facility details are available
         expect(facility.name).toBeDefined();
         expect(facility.category).toBeDefined();
         expect(facility.capacity).toBeDefined();
@@ -17,41 +24,68 @@ describe('Facility Validation', () => {
         expect(facility.description).toBeDefined();
     });
 
+
+    // Verify that facility capacity is stored as a number
     test('Facility capacity should be a number', () => {
+
         const facility = { capacity: 24 };
+
         expect(typeof facility.capacity).toBe('number');
     });
 
+
+    // Verify that facility capacity must be a positive value
     test('Facility capacity should be greater than 0', () => {
+
         const facility = { capacity: 24 };
+
         expect(facility.capacity).toBeGreaterThan(0);
     });
 
+
+    // Verify that facility name cannot be empty
     test('Facility name should not be empty', () => {
+
         const facility = { name: 'Badminton Hall (6 Courts)' };
+
         expect(facility.name.length).toBeGreaterThan(0);
     });
 
+
+    // Verify that facility category matches available categories
     test('Facility category should be valid', () => {
+
         const validCategories = ['Indoor', 'Outdoor', 'Aquatics'];
         const facility = { category: 'Indoor' };
+
         expect(validCategories).toContain(facility.category);
     });
 
+
+    // Verify that facility image uses a valid URL format
     test('Facility image URL should be valid', () => {
+
         const facility = { 
             image: 'https://images.unsplash.com/photo.jpg' 
         };
+
         expect(facility.image).toMatch(/^https?:\/\/.+/);
     });
 
+
+    // Verify that a default image is assigned when no image is provided
     test('Default image should be used if image is empty', () => {
+
         const defaultImage = 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600';
         const image = '' || defaultImage;
+
         expect(image).toBe(defaultImage);
     });
 
+
+    // Verify that the system contains all required sports facilities
     test('8 facilities should exist', () => {
+
         const facilities = [
             'Competition Hall',
             'Badminton Hall (6 Courts)',
@@ -62,6 +96,8 @@ describe('Facility Validation', () => {
             'Swimming Pool',
             'Martial Arts Room'
         ];
+
         expect(facilities).toHaveLength(8);
     });
+
 });

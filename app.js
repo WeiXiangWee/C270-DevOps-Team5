@@ -34,15 +34,19 @@ app.use(async (req, res, next) => {
     next();
 });
 
-const authRoutes = require('./routes/auth');
+//Yan's routes for user registration, login, and password reset functionality//
+const authRoutes = require('./routes/auth'); 
 app.use('/', authRoutes);
 
+//Ally's routes for facility management (add, edit, delete)//
 const facilitiesRoutes = require('./routes/facilities');
 app.use('/', facilitiesRoutes);
 
+//Geeta's routes for booking management (add, cancel)//
 const bookingsRoutes = require('./routes/bookings');
 app.use('/', bookingsRoutes);
 
+// WX's Segment for search and availability routes//
 app.get("/search", async (req, res) => {
     if (!req.session.user) {
         return res.redirect('/login');
@@ -279,6 +283,8 @@ app.get("/availability", (req, res) => {
 app.get("/contact", (req, res) => {
     res.render("contact");
 });
+
+//WX's Segment for search and availability routes ends here//
 
 const PORT = process.env.PORT || 3000;
 

@@ -17,6 +17,8 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+// Wu Shutong's segment //
+
 // GET - View all bookings
 router.get('/bookings', async (req, res) => {
     if (!req.session.user) {
@@ -63,6 +65,9 @@ router.get('/bookings', async (req, res) => {
         res.redirect('/dashboard');
     }
 });
+// WU Shutong's segment ends here //
+
+// Geeta 's segment for booking management (add, cancel) //
 
 // GET - Book directly from search page
 router.get('/bookings/add', async (req, res) => {
@@ -215,6 +220,8 @@ router.post('/bookings/cancel/:id', async (req, res) => {
     }
 });
 
+// Yan and Wu shutong's segment add maintenance management for admin only//
+
 // GET - Show maintenance form (admin only)
 router.get('/maintenance', async (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') {
@@ -321,6 +328,9 @@ router.post('/maintenance/delete/:id', async (req, res) => {
         res.redirect('/maintenance');
     }
 });
+// Yan and Wu shutong's segment for maintenance management ends here//
+
+// Yan's Segment for booking reminders API for n8n integration
 
 // GET - API for n8n booking reminder
 router.get('/api/bookings/reminders', async (req, res) => {

@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
+// Ally's segment for facility management (add, edit, delete) //
+
 // GET - View all facilities
 router.get('/facilities', async (req, res) => {
     try {
@@ -136,4 +138,5 @@ router.post('/facilities/delete/:id', async (req, res) => {
     }
 });
 
+// Ally's segment for facility management (add, edit, delete) ends here //
 module.exports = router;
