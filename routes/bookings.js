@@ -262,26 +262,56 @@ router.post('/maintenance/add', async (req, res) => {
 
         // Yan's n8n integration for maintenance cancellation workflow //
 
-        // Trigger n8n maintenance cancellation workflow
-        try {
-            axios.post(process.env.N8N_MAINTENANCE_WEBHOOK, {
-                name: booking.user_name,
-                email: booking.email,
-                facility: facilityName,
-                startDate: startDate,
-                endDate: endDate,
-                reason: reason
-            });
+        // Get affected users before sending n8n notification
+        const [affectedBookings] = await db.query(
+            `
+            SELECT 
+                u.name AS user_name,
+                u.email,
+                b.name AS facility,
+                b.date,
+                b.duration
+            FROM bookings b
+            JOIN users u
+            ON b.userId = u.id
+            WHERE b.name = ?
+            AND b.date BETWEEN ? AND ?
+            `,
+            [facility, startDate, endDate]
+        );
 
-            console.log('N8N maintenance notification triggered');
 
-        } catch (error) {
-            console.error(
-                'N8N webhook error:',
-                error.message
-            );
+        // Send notification to n8n for each affected booking
+        for (const booking of affectedBookings) {
+
+            try {
+
+                await axios.post(
+                    process.env.N8N_MAINTENANCE_WEBHOOK,
+                    {
+                        name: booking.user_name,
+                        email: booking.email,
+                        facility: booking.facility,
+                        startDate: startDate,
+                        endDate: endDate,
+                        reason: reason
+                    }
+                );
+
+                console.log(
+                    'N8N maintenance notification sent to:',
+                    booking.email
+                );
+
+            } catch (error) {
+
+                console.error(
+                    'N8N webhook error:',
+                    error.message
+                );
+
+            }
         }
-
         const bookedSlots = req.app.locals.bookedSlots;
         const timeSlots = [
             '07:00 – 09:00', '09:00 – 11:00', '11:00 – 13:00',
